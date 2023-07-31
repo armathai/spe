@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 
-export type TypedArray = ArrayLike<any> & {
+export type TypedArray = ArrayLike<unknown> & {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     BYTES_PER_ELEMENT: number;
     set(array: ArrayLike<number>, offset?: number): void;

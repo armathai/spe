@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * A helper to handle creating and updating a THREE.BufferAttribute instance.
  *

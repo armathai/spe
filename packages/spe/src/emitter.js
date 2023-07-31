@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * An SPE.Emitter instance.
  * @typedef {Object} Emitter
