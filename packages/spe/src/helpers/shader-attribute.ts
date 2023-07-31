@@ -30,6 +30,7 @@ export enum ComponentSize {
      * Color
      * @type {Number}
      */
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
     c = 3,
 
     /**

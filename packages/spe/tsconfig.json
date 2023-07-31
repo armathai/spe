@@ -17,7 +17,7 @@
         "moduleResolution": "Node",
         "esModuleInterop": true,
 
-        "allowJs": true,
+        "allowJs": false,
 
         "declaration": true,
         "removeComments": true
