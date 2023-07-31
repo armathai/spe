@@ -12,8 +12,7 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "@armathai/lib1": "*",
-        "@armathai/lib2": "*",
+        "@armathai/spe": "*",
         "parcel": "^2.6.2"
     }
 }

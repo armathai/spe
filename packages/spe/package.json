@@ -1,5 +1,5 @@
 {
-    "name": "@armathai/lib1",
+    "name": "@armathai/spe",
     "version": "2.0.0",
     "license": "MIT",
     "source": "src/index.ts",
@@ -12,16 +12,16 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:armathai/lib1.git"
+        "url": "git@github.com:armathai/spe.git"
     },
     "bugs": {
-        "url": "https://github.com/armathai/lib1/issues"
+        "url": "https://github.com/armathai/spe/issues"
     },
     "keywords": [
         "key1",
         "key2"
     ],
-    "homepage": "https://github.com/armathai/lib1#readme",
+    "homepage": "https://github.com/armathai/spe#readme",
     "scripts": {
         "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
         "test": "jest --config jestconfig.json",
