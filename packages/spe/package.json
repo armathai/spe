@@ -1,6 +1,6 @@
 {
     "name": "@armathai/spe",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "license": "MIT",
     "source": "src/index.ts",
     "main": "dist/index.js",
@@ -18,8 +18,13 @@
         "url": "https://github.com/armathai/spe/issues"
     },
     "keywords": [
-        "key1",
-        "key2"
+        "three.js",
+        "webgl",
+        "particle",
+        "particles",
+        "glsl",
+        "shader",
+        "spe"
     ],
     "homepage": "https://github.com/armathai/spe#readme",
     "scripts": {
