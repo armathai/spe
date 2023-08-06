@@ -8,9 +8,17 @@ export class CompositeTypedArray {
         private _typedArrayConstructor: TypedArrayConstructor<TypedArray> = Float32Array,
         private _size = 1,
         private _componentSize = 1,
-        private _indexOffset = 0
+        private _indexOffset = 0,
     ) {
         this._array = new _typedArrayConstructor(this._size * this._componentSize);
+    }
+
+    public get array(): TypedArray {
+        return this._array;
+    }
+
+    public get size(): number {
+        return this._size;
     }
 
     /**
@@ -23,7 +31,7 @@ export class CompositeTypedArray {
      *
      * @param {Number} size The new size of the array.
      */
-    public setSize(size: number, noComponentMultiply: number): this | undefined {
+    public setSize(size: number, noComponentMultiply?: number): this | undefined {
         const currentArraySize = this._array.length;
 
         if (!noComponentMultiply) {
@@ -166,8 +174,6 @@ export class CompositeTypedArray {
      * @return {SPE.TypedArrayHelper} Instance of this class.
      */
     public setVec3Components(index: number, x: number, y: number, z: number): this {
-        'use strict';
-
         const array = this._array,
             i = this._indexOffset + index * this._componentSize;
 
@@ -219,7 +225,7 @@ export class CompositeTypedArray {
     public setMat3(index: number, mat3: Matrix3): this {
         return this.setFromArray(
             this._indexOffset + index * this._componentSize,
-            mat3.elements as unknown as TypedArray
+            mat3.elements as unknown as TypedArray,
         );
     }
 
@@ -233,7 +239,7 @@ export class CompositeTypedArray {
     public setMat4(index: number, mat4: Matrix4): this {
         return this.setFromArray(
             this._indexOffset + index * this._componentSize,
-            mat4.elements as unknown as TypedArray
+            mat4.elements as unknown as TypedArray,
         );
     }
 

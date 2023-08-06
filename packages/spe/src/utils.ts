@@ -1,4 +1,6 @@
 import { Color, MathUtils, Vector2, Vector3, Vector4 } from 'three';
+import { clamp } from 'three/src/math/MathUtils';
+import { ShaderAttribute } from './helpers/shader-attribute';
 import { AConstructorTypeOf, ObjectType } from './types';
 
 /**
@@ -11,9 +13,9 @@ import { AConstructorTypeOf, ObjectType } from './types';
  * @param  {typeof arg} defaultValue A default value to fallback on if the type check fails.
  * @return {typeof arg}              The given value if type check passes, or the default value if it fails.
  */
-export const ensureTypedArg = <T>(arg: T, type: ObjectType, defaultValue: typeof arg): typeof arg => {
+export const ensureTypedArg = <T>(arg: T | undefined, type: ObjectType, defaultValue: T): T => {
     if (typeof arg === type) {
-        return arg;
+        return arg!;
     } else {
         return defaultValue;
     }
@@ -31,11 +33,16 @@ export const ensureTypedArg = <T>(arg: T, type: ObjectType, defaultValue: typeof
  * @param  {typeof arg} defaultValue A default fallback value.
  * @return {typeof arg}              The given value if type check passes, or the default value if it fails.
  */
-export const ensureArrayTypedArg = <T>(arg: Array<T> | T, type: ObjectType, defaultValue: typeof arg): typeof arg => {
+export const ensureArrayTypedArg = <T>(
+    arg: Array<T> | T | undefined,
+    type: ObjectType,
+    defaultValue: Array<T> | T,
+): Array<T> | T => {
     // If the argument being checked is an array, loop through
     // it and ensure all the values are of the correct type,
     // falling back to the defaultValue if any aren't.
     if (Array.isArray(arg)) {
+        // ToDo: check this line it does nothing but checks only the last item's type (not every item)
         for (let i = arg.length - 1; i >= 0; --i) {
             if (typeof arg[i] !== type) {
                 return defaultValue;
@@ -58,7 +65,11 @@ export const ensureArrayTypedArg = <T>(arg: Array<T> | T, type: ObjectType, defa
  * @param  {typeof arg} defaultValue A default fallback value if instance check fails
  * @return {typeof arg}              The given value if type check passes, or the default value if it fails.
  */
-export const ensureInstanceOf = <T>(arg: T, instance: AConstructorTypeOf<T>, defaultValue: typeof arg): typeof arg => {
+export const ensureInstanceOf = <Args extends unknown[], T>(
+    arg: T | undefined,
+    instance: AConstructorTypeOf<Args, T>,
+    defaultValue: T,
+): T => {
     if (instance !== undefined && arg instanceof instance) {
         return arg;
     } else {
@@ -78,11 +89,11 @@ export const ensureInstanceOf = <T>(arg: T, instance: AConstructorTypeOf<T>, def
  * @param  {typeof arg} defaultValue A default fallback value if instance check fails
  * @return {typeof arg}              The given value if type check passes, or the default value if it fails.
  */
-export const ensureArrayInstanceOf = <T>(
-    arg: Array<T> | T,
-    instance: AConstructorTypeOf<T>,
-    defaultValue: typeof arg
-): typeof arg => {
+export const ensureArrayInstanceOf = <Args extends unknown[], T>(
+    arg: Array<T> | T | undefined,
+    instance: AConstructorTypeOf<Args, T>,
+    defaultValue: Array<T> | T,
+): Array<T> | T => {
     // If the argument being checked is an array, loop through
     // it and ensure all the values are of the correct type,
     // falling back to the defaultValue if any aren't.
@@ -110,26 +121,26 @@ export const ensureArrayInstanceOf = <T>(
  *                                               the start and end arguments aren't a supported type, or
  *                                               if their types do not match.
  */
-export const lerpTypeAgnostic = (
-    start: number | Vector2 | Vector3 | Vector4 | Color,
+export const lerpTypeAgnostic = <T = number | Vector2 | Vector3 | Vector4 | Color>(
+    start: T,
     end: typeof start,
-    delta: number
-): typeof start => {
+    delta: number,
+): T => {
     if (typeof start === 'number' && typeof end === 'number') {
-        return start + (end - start) * delta;
+        return (start + (end - start) * delta) as T;
     }
     if (start instanceof Vector2 && end instanceof Vector2) {
         const out = start.clone();
         out.x = MathUtils.lerp(start.x, end.x, delta);
         out.y = MathUtils.lerp(start.y, end.y, delta);
-        return out;
+        return out as T;
     }
     if (start instanceof Vector3 && end instanceof Vector3) {
         const out = start.clone();
         out.x = MathUtils.lerp(start.x, end.x, delta);
         out.y = MathUtils.lerp(start.y, end.y, delta);
         out.z = MathUtils.lerp(start.z, end.z, delta);
-        return out;
+        return out as T;
     }
     if (start instanceof Vector4 && end instanceof Vector4) {
         const out = start.clone();
@@ -137,14 +148,14 @@ export const lerpTypeAgnostic = (
         out.y = MathUtils.lerp(start.y, end.y, delta);
         out.z = MathUtils.lerp(start.z, end.z, delta);
         out.w = MathUtils.lerp(start.w, end.w, delta);
-        return out;
+        return out as T;
     }
     if (start instanceof Color && end instanceof Color) {
         const out = start.clone();
         out.r = MathUtils.lerp(start.r, end.r, delta);
         out.g = MathUtils.lerp(start.g, end.g, delta);
         out.b = MathUtils.lerp(start.b, end.b, delta);
-        return out;
+        return out as T;
     }
     throw Error(`Invalid argument types, or argument types do not match:', ${start}, ${end}`);
 };
@@ -161,12 +172,16 @@ export const lerpTypeAgnostic = (
  * @param  {Number} newLength The length the array should be interpolated to.
  * @return {Array}           The interpolated array.
  */
-export const interpolateArray = (
-    srcArray: Array<number | Vector2 | Vector3 | Vector4 | Color>,
-    newLength: number
+export const interpolateArray = <T = number | Vector2 | Vector3 | Vector4 | Color>(
+    srcArray: Array<T>,
+    newLength: number,
 ): typeof srcArray => {
     const sourceLength = srcArray.length,
-        newArray = [typeof srcArray[0] === 'number' ? srcArray[0] : srcArray[0].clone()],
+        newArray = [
+            typeof srcArray[0] === 'number'
+                ? srcArray[0]
+                : (srcArray[0] as Vector2 | Vector3 | Vector4 | Color).clone(),
+        ] as Array<T>,
         factor = (sourceLength - 1) / (newLength - 1);
 
     for (let i = 1; i < newLength - 1; ++i) {
@@ -179,54 +194,48 @@ export const interpolateArray = (
     }
 
     const last = srcArray[sourceLength - 1];
-    newArray.push(typeof last === 'number' ? last : last.clone());
+    newArray.push((typeof last === 'number' ? last : (last as Vector2 | Vector3 | Vector4 | Color).clone()) as T);
 
     return newArray;
 };
 
-/**
- * Ensures that any "value-over-lifetime" properties of an emitter are
- * of the correct length (as dictated by `SPE.valueOverLifetimeLength`).
- *
- * Delegates to `SPE.utils.interpolateArray` for array resizing.
- *
- * If properties aren't arrays, then property values are put into one.
- *
- * @param  {unknown} property  The property of an Emitter instance to check compliance of.
- * @param  {Number} minLength The minimum length of the array to create.
- * @param  {Number} maxLength The maximum length of the array to create.
- */
-export const ensureValueOverLifetimeCompliance = (
-    property: {
-        value: Array<number | Vector2 | Vector3 | Vector4 | Color> | number | Vector2 | Vector3 | Vector4 | Color;
-        spread: Array<number | Vector2 | Vector3 | Vector4 | Color> | number | Vector2 | Vector3 | Vector4 | Color;
-    },
+export const ensureValueAndSpreadOverLifetimeCompliance = <
+    T = number | Vector2 | Vector3 | Vector4 | Color,
+    M = number | Vector3,
+>(
+    value: Array<T> | T,
+    spread: Array<M> | M,
     minLength: number,
-    maxLength: number
-): void => {
+    maxLength: number,
+): {
+    value: Array<T>;
+    spread: Array<M>;
+} => {
     minLength = minLength || 3;
     maxLength = maxLength || 3;
 
     // First, ensure both properties are arrays.
-    if (!Array.isArray(property.value)) {
-        property.value = [property.value];
+    if (!Array.isArray(value)) {
+        value = [value];
     }
 
-    if (!Array.isArray(property.spread)) {
-        property.spread = [property.spread];
+    if (!Array.isArray(spread)) {
+        spread = [spread];
     }
 
-    const valueLength = MathUtils.clamp(property.value.length, minLength, maxLength),
-        spreadLength = MathUtils.clamp(property.spread.length, minLength, maxLength),
-        desiredLength = Math.max(valueLength, spreadLength);
+    const valueLength = MathUtils.clamp(value.length, minLength, maxLength);
+    const spreadLength = MathUtils.clamp(spread.length, minLength, maxLength);
+    const desiredLength = Math.max(valueLength, spreadLength);
 
-    if (property.value.length !== desiredLength) {
-        property.value = interpolateArray(property.value, desiredLength);
+    if (value.length !== desiredLength) {
+        value = interpolateArray(value, desiredLength);
     }
 
-    if (property.spread.length !== desiredLength) {
-        property.spread = interpolateArray(property.spread, desiredLength);
+    if (spread.length !== desiredLength) {
+        spread = interpolateArray(spread, desiredLength);
     }
+
+    return { value, spread };
 };
 
 /**
@@ -238,11 +247,11 @@ export const ensureValueOverLifetimeCompliance = (
  * @param  {Boolean} randomise Whether the value should be randomised.
  * @return {Number}           The result of the operation.
  */
-export const zeroToEpsilon = (value: number, randomise: boolean): number => {
+export const zeroToEpsilon = (value: number, randomize: boolean): number => {
     const epsilon = 0.00001;
     let result = value;
 
-    result = randomise ? Math.random() * epsilon * 10 : epsilon;
+    result = randomize ? Math.random() * epsilon * 10 : epsilon;
 
     if (value < 0 && value > -epsilon) {
         result = -result;
@@ -316,19 +325,15 @@ export const randomFloat = (base: number, spread: number): number => {
  */
 
 export const randomVector3 = (
-    attribute: unknown,
+    attribute: ShaderAttribute,
     index: number,
     base: Vector3,
     spread: Vector3,
-    spreadClamp: Vector3
+    spreadClamp?: Vector3,
 ): void => {
     let x = base.x + (Math.random() * spread.x - spread.x * 0.5),
         y = base.y + (Math.random() * spread.y - spread.y * 0.5),
         z = base.z + (Math.random() * spread.z - spread.z * 0.5);
-
-    // var x = this.randomFloat( base.x, spread.x ),
-    // y = this.randomFloat( base.y, spread.y ),
-    // z = this.randomFloat( base.z, spread.z );
 
     if (spreadClamp) {
         x = -spreadClamp.x * 0.5 + roundToNearestMultiple(x, spreadClamp.x);
@@ -336,8 +341,7 @@ export const randomVector3 = (
         z = -spreadClamp.z * 0.5 + roundToNearestMultiple(z, spreadClamp.z);
     }
 
-    //@ts-expect-error: TODO: fix this
-    attribute.typedArray.setVec3Components(index, x, y, z);
+    attribute.typedArray!.setVec3Components(index, x, y, z);
 };
 
 /**
@@ -348,7 +352,7 @@ export const randomVector3 = (
  * @param  {Object} base      THREE.Color instance describing the start color.
  * @param  {Object} spread    THREE.Vector3 instance describing the random variance to apply to the start color.
  */
-export const randomColor = (attribute: unknown, index: number, base: Color, spread: Vector3): void => {
+export const randomColor = (attribute: ShaderAttribute, index: number, base: Color, spread: Vector3): void => {
     let r = base.r + Math.random() * spread.x,
         g = base.g + Math.random() * spread.y,
         b = base.b + Math.random() * spread.z;
@@ -357,8 +361,7 @@ export const randomColor = (attribute: unknown, index: number, base: Color, spre
     g = MathUtils.clamp(g, 0, 1);
     b = MathUtils.clamp(b, 0, 1);
 
-    //@ts-expect-error: TODO: fix this
-    attribute.typedArray.setVec3Components(index, r, g, b);
+    attribute.typedArray!.setVec3Components(index, r, g, b);
 };
 
 export const randomColorAsHex = (() => {
@@ -372,23 +375,27 @@ export const randomColorAsHex = (() => {
      * @param  {Object} base      THREE.Color instance describing the start color.
      * @param  {Object} spread    THREE.Vector3 instance describing the random variance to apply to the start color.
      */
-    return (attribute: unknown, index: number, base: Color, spread: Vector3) => {
+    return (attribute: ShaderAttribute, index: number, base: Color[], spread: Vector3[]) => {
+        const numItems = base.length;
         const colors: number[] = [];
 
-        workingColor.copy(base);
+        for (let i = 0; i < numItems; ++i) {
+            const spreadVector = spread[i];
 
-        workingColor.r += Math.random() * spread.x - spread.x * 0.5;
-        workingColor.g += Math.random() * spread.y - spread.y * 0.5;
-        workingColor.b += Math.random() * spread.z - spread.z * 0.5;
+            workingColor.copy(base[i]);
 
-        workingColor.r = MathUtils.clamp(workingColor.r, 0, 1);
-        workingColor.g = MathUtils.clamp(workingColor.g, 0, 1);
-        workingColor.b = MathUtils.clamp(workingColor.b, 0, 1);
+            workingColor.r += Math.random() * spreadVector.x - spreadVector.x * 0.5;
+            workingColor.g += Math.random() * spreadVector.y - spreadVector.y * 0.5;
+            workingColor.b += Math.random() * spreadVector.z - spreadVector.z * 0.5;
 
-        colors.push(workingColor.getHex());
+            workingColor.r = clamp(workingColor.r, 0, 1);
+            workingColor.g = clamp(workingColor.g, 0, 1);
+            workingColor.b = clamp(workingColor.b, 0, 1);
 
-        //@ts-expect-error: TODO: fix this
-        attribute.typedArray.setVec4Components(index, colors[0], colors[1], colors[2], colors[3]);
+            colors.push(workingColor.getHex());
+        }
+
+        attribute.typedArray!.setVec4Components(index, colors[0], colors[1], colors[2], colors[3]);
     };
 })();
 
@@ -401,12 +408,11 @@ export const randomColorAsHex = (() => {
  * @param  {Object} start       THREE.Vector3 instance describing the start line position.
  * @param  {Object} end         THREE.Vector3 instance describing the end line position.
  */
-export const randomVector3OnLine = (attribute: unknown, index: number, start: Vector3, end: Vector3): void => {
+export const randomVector3OnLine = (attribute: ShaderAttribute, index: number, start: Vector3, end: Vector3): void => {
     const pos = start.clone();
 
     pos.lerp(end, Math.random());
-    //@ts-expect-error: TODO: fix this
-    attribute.typedArray.setVec3Components(index, pos.x, pos.y, pos.z);
+    attribute.typedArray!.setVec3Components(index, pos.x, pos.y, pos.z);
 };
 
 /**
@@ -422,13 +428,13 @@ export const randomVector3OnLine = (attribute: unknown, index: number, start: Ve
  * @param  {Number} radiusSpreadClamp What numeric multiple the projected value should be clamped to.
  */
 export const randomVector3OnSphere = (
-    attribute: unknown,
+    attribute: ShaderAttribute,
     index: number,
     base: Vector3,
     radius: number,
     radiusSpread: number,
     radiusScale: Vector3,
-    radiusSpreadClamp: number
+    radiusSpreadClamp: number,
 ): void => {
     const depth = 2 * Math.random() - 1,
         t = 6.2832 * Math.random(),
@@ -459,8 +465,7 @@ export const randomVector3OnSphere = (
     z += base.z;
 
     // Set the values in the typed array.
-    //@ts-expect-error: TODO: fix this
-    attribute.typedArray.setVec3Components(index, x, y, z);
+    attribute.typedArray!.setVec3Components(index, x, y, z);
 };
 
 /**
@@ -476,13 +481,13 @@ export const randomVector3OnSphere = (
  * @param  {Number} radiusSpreadClamp What numeric multiple the projected value should be clamped to.
  */
 export const randomVector3OnDisc = (
-    attribute: unknown,
+    attribute: ShaderAttribute,
     index: number,
     base: Vector3,
     radius: number,
     radiusSpread: number,
     radiusScale: Vector3,
-    radiusSpreadClamp: number
+    radiusSpreadClamp: number,
 ): void => {
     const t = 6.2832 * Math.random();
     let rand = Math.abs(randomFloat(radius, radiusSpread)),
@@ -508,8 +513,7 @@ export const randomVector3OnDisc = (
     z += base.z;
 
     // Set the values in the typed array.
-    //@ts-expect-error: TODO: fix this
-    attribute.typedArray.setVec3Components(index, x, y, z);
+    attribute.typedArray!.setVec3Components(index, x, y, z);
 };
 
 export const randomDirectionVector3OnSphere = (() => {
@@ -529,14 +533,14 @@ export const randomDirectionVector3OnSphere = (() => {
      * @param  {Number} speedSpread     The amount of randomness to apply to the magnitude.
      */
     return (
-        attribute: unknown,
+        attribute: ShaderAttribute,
         index: number,
         posX: number,
         posY: number,
         posZ: number,
         emitterPosition: Vector3,
         speed: number,
-        speedSpread: number
+        speedSpread: number,
     ) => {
         v.copy(emitterPosition);
 
@@ -546,8 +550,7 @@ export const randomDirectionVector3OnSphere = (() => {
 
         v.normalize().multiplyScalar(-randomFloat(speed, speedSpread));
 
-        //@ts-expect-error: TODO: fix this
-        attribute.typedArray.setVec3Components(index, v.x, v.y, v.z);
+        attribute.typedArray!.setVec3Components(index, v.x, v.y, v.z);
     };
 })();
 
@@ -568,14 +571,14 @@ export const randomDirectionVector3OnDisc = (() => {
      * @param  {Number} speedSpread     The amount of randomness to apply to the magnitude.
      */
     return (
-        attribute: unknown,
+        attribute: ShaderAttribute,
         index: number,
         posX: number,
         posY: number,
         posZ: number,
         emitterPosition: Vector3,
         speed: number,
-        speedSpread: number
+        speedSpread: number,
     ) => {
         v.copy(emitterPosition);
 
@@ -584,8 +587,7 @@ export const randomDirectionVector3OnDisc = (() => {
         v.z -= posZ;
 
         v.normalize().multiplyScalar(-randomFloat(speed, speedSpread));
-        //@ts-expect-error: TODO: fix this
-        attribute.typedArray.setVec3Components(index, v.x, v.y, 0);
+        attribute.typedArray!.setVec3Components(index, v.x, v.y, 0);
     };
 })();
 
