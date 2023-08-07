@@ -10,9 +10,12 @@
     "scripts": {
         "start": "rimraf dist && parcel --port 8080"
     },
-    "dependencies": {},
-    "devDependencies": {
+    "dependencies": {
         "@armathai/spe": "*",
+        "stats.js": "^0.17.0",
+        "three": "^0.155.0"
+    },
+    "devDependencies": {
         "parcel": "^2.6.2"
     }
 }

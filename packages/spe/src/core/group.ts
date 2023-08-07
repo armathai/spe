@@ -283,6 +283,10 @@ export class Group {
         }
     }
 
+    public get mesh(): Points {
+        return this._mesh;
+    }
+
     public updateDefines(): void {
         const emitters = this._emitters;
         const defines = this._defines;
@@ -717,29 +721,29 @@ export class Group {
     private _applyAttributesToGeometry(): void {
         const attributes = this._attributes;
         const geometry = this._geometry;
-        const geometryAttributes = geometry.attributes;
+        // const geometryAttributes = geometry.attributes;
 
         // Loop through all the shader attributes and assign (or re-assign)
         // typed array buffers to each one.
         for (const attr in attributes) {
             if (attributes.hasOwnProperty(attr as keyof GroupAttributesMap)) {
                 const attribute = attributes[attr as keyof GroupAttributesMap];
-                const geometryAttribute = geometryAttributes[attr];
+                // const geometryAttribute = geometryAttributes[attr];
 
                 // Update the array if this attribute exists on the geometry.
                 //
                 // This needs to be done because the attribute's typed array might have
                 // been resized and reinstantiated, and might now be looking at a
                 // different ArrayBuffer, so reference needs updating.
-                if (geometryAttribute) {
-                    // ToDo: There is something wrong because array is Readonly property
-                    // geometryAttribute.array = attribute.typedArray!.array;
-                }
+                // if (geometryAttribute) {
+                // ToDo: There is something wrong because array is Readonly property
+                // geometryAttribute.array = attribute.typedArray!.array;
+                // }
 
                 // Add the attribute to the geometry if it doesn't already exist.
-                else {
-                    geometry.setAttribute(attr, attribute.bufferAttribute!);
-                }
+                // else {
+                geometry.setAttribute(attr, attribute.bufferAttribute!);
+                // }
 
                 // Mark the attribute as needing an update the next time a frame is rendered.
                 attribute.bufferAttribute!.needsUpdate = true;

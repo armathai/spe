@@ -196,7 +196,7 @@ export class Emitter {
     private _size: EmitterSize;
     private _angle: EmitterAngle;
     private _particleCount: number;
-    private _duration: number | null; // ToDo: it's wrong to have this type
+    private _duration: number; // ToDo: it's wrong to have this type
     private _isStatic: boolean;
     private _activeMultiplier: number;
     private _direction: number;
@@ -313,7 +313,7 @@ export class Emitter {
 
         // Assign remaining option values.
         this._particleCount = ensureTypedArg(options.particleCount, 'number', 100);
-        this._duration = ensureTypedArg(options.duration, 'number', null);
+        this._duration = ensureTypedArg(options.duration, 'number', -1);
         this._isStatic = ensureTypedArg(options.isStatic, 'boolean', false);
         this._activeMultiplier = ensureTypedArg(options.activeMultiplier, 'number', 1);
         this._direction = ensureTypedArg(options.direction, 'number', 1);
@@ -496,7 +496,7 @@ export class Emitter {
         return this._particleCount;
     }
 
-    public get duration(): number | null {
+    public get duration(): number {
         return this._duration;
     }
 
@@ -534,7 +534,7 @@ export class Emitter {
         // Calculate the `particlesPerSecond` value for this emitter. It's used
         // when determining which particles should die and which should live to
         // see another day. Or be born, for that matter. The "God" property.
-        if (this._duration) {
+        if (this._duration !== -1) {
             this._particlesPerSecond = particleCount / (groupMaxAge < this._duration ? groupMaxAge : this._duration);
         } else {
             this._particlesPerSecond = particleCount / groupMaxAge;
@@ -779,9 +779,6 @@ export class Emitter {
         const ppsDt = this._particlesPerSecond * this._activeMultiplier * dt;
         const activationIndex = this._activationIndex;
 
-        // Reset the buffer update indices.
-        this._resetBufferRanges();
-
         // Increment age for those particles that are alive,
         // and kill off any particles whose age is over the limit.
         this._checkParticleAges(start, end, params, dt);
@@ -795,7 +792,7 @@ export class Emitter {
 
         // If the emitter has a specified lifetime and we've exceeded it,
         // mark the emitter as dead.
-        if (this._duration !== null && this._age > this._duration) {
+        if (this._duration !== -1 && this._age > this._duration) {
             this._alive = false;
             this._age = 0.0;
             return;
@@ -939,19 +936,6 @@ export class Emitter {
 
         ranges.min = Math.min(i, ranges.min);
         ranges.max = Math.max(i, ranges.max);
-    }
-
-    // ToDo: This function is doing nothing because bufferUpdateKeys and bufferUpdateCount doesn't exist on this
-    private _resetBufferRanges(): void {
-        // const ranges = this._bufferUpdateRanges,
-        //     keys = this.bufferUpdateKeys,
-        //     i = this.bufferUpdateCount - 1,
-        //     key;
-        // for (i; i >= 0; --i) {
-        //     key = keys[i];
-        //     ranges[key].min = Number.POSITIVE_INFINITY;
-        //     ranges[key].max = Number.NEGATIVE_INFINITY;
-        // }
     }
 
     private _decrementParticleCount(): void {

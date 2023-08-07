@@ -33,6 +33,7 @@
         "lint": "eslint 'src/**/*.{js,ts,ts}'",
         "build": "npm run clean && tsc --build"
     },
-    "dependencies": {},
-    "devDependencies": {}
+    "dependencies": {
+        "three": "^0.155.0"
+    }
 }

@@ -36,7 +36,7 @@ export type AConstructorTypeOf<Args extends unknown[], T> = new (...args: Args) 
 export type EmitterOptions = {
     type?: Distribution;
     particleCount?: number;
-    duration?: number | null;
+    duration?: number;
     isStatic?: boolean;
     activeMultiplier?: number;
     direction?: number;

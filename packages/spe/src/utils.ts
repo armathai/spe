@@ -42,7 +42,6 @@ export const ensureArrayTypedArg = <T>(
     // it and ensure all the values are of the correct type,
     // falling back to the defaultValue if any aren't.
     if (Array.isArray(arg)) {
-        // ToDo: check this line it does nothing but checks only the last item's type (not every item)
         for (let i = arg.length - 1; i >= 0; --i) {
             if (typeof arg[i] !== type) {
                 return defaultValue;
