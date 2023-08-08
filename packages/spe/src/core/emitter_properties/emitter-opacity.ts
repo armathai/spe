@@ -1,6 +1,6 @@
 import { valueOverLifetimeLength } from '../../constants';
 import { EmitterProperty } from '../../types';
-import { ensureTypedArg, ensureValueAndSpreadOverLifetimeCompliance } from '../../utils';
+import { ensureArrayTypedArg, ensureTypedArg, ensureValueAndSpreadOverLifetimeCompliance } from '../../utils';
 import { Emitter } from '../emitter';
 
 export class EmitterOpacity {
@@ -16,8 +16,8 @@ export class EmitterOpacity {
         private _emitter: Emitter,
     ) {
         const { value: valuesArray, spread: spreadsArray } = ensureValueAndSpreadOverLifetimeCompliance(
-            ensureTypedArg(value, 'number', 1),
-            ensureTypedArg(spread, 'number', 0),
+            ensureArrayTypedArg(value, 'number', 1),
+            ensureArrayTypedArg(spread, 'number', 0),
             valueOverLifetimeLength,
             valueOverLifetimeLength,
         );
@@ -39,7 +39,7 @@ export class EmitterOpacity {
         this._emitter.group!.updateDefines();
 
         const { value: valuesArray } = ensureValueAndSpreadOverLifetimeCompliance(
-            ensureTypedArg(value, 'number', 1),
+            ensureArrayTypedArg(value, 'number', 1),
             this._spread,
             valueOverLifetimeLength,
             valueOverLifetimeLength,
@@ -62,7 +62,7 @@ export class EmitterOpacity {
 
         const { spread: spreadsArray } = ensureValueAndSpreadOverLifetimeCompliance(
             this._value,
-            ensureTypedArg(value, 'number', 0),
+            ensureArrayTypedArg(value, 'number', 0),
             valueOverLifetimeLength,
             valueOverLifetimeLength,
         );

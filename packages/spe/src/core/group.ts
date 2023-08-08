@@ -70,6 +70,9 @@ import { Emitter } from './emitter';
  *
  * @property {Number} scale The scale factor to apply to this group's particle sizes. Useful for
  *                          setting particle sizes to be relative to renderer size.
+ *
+ * @property {Number} pixelRatio The pixelRatio of renderer
+ *
  */
 
 /**
@@ -97,6 +100,7 @@ export class Group {
     private _depthTest: boolean;
     private _fog: boolean;
     private _scale: number;
+    private _pixelRatio: number;
 
     private _emitters: Emitter[];
     private _emitterIDs: string[];
@@ -159,6 +163,7 @@ export class Group {
         this._depthTest = ensureTypedArg(options.depthTest, 'boolean', true);
         this._fog = ensureTypedArg(options.fog, 'boolean', true);
         this._scale = ensureTypedArg(options.scale, 'number', 300);
+        this._pixelRatio = ensureTypedArg(options.pixelRatio, 'number', 1);
 
         // Where emitter's go to curl up in a warm blanket and live
         // out their days.
@@ -220,7 +225,7 @@ export class Group {
             },
             scale: {
                 // type: 'f',
-                value: this._scale,
+                value: this._scale * this._pixelRatio,
             },
         };
 
@@ -595,7 +600,7 @@ export class Group {
      * attribute values along the way.
      * @param  {Number} [dt=Group's `fixedTimeStep` value] The number of seconds to simulate the group's emitters for (deltaTime)
      */
-    public tick(dt: number): void {
+    public tick(dt?: number): void {
         const emitters = this._emitters;
         const numEmitters = emitters.length;
         const deltaTime = dt || this._fixedTimeStep;

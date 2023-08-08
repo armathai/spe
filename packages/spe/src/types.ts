@@ -108,7 +108,7 @@ export type EmitterOptions = {
         randomize?: boolean;
     };
     angle?: {
-        value?: number;
+        value?: number | number[];
         spread?: number;
         randomize?: boolean;
     };
@@ -153,6 +153,7 @@ export type GroupOptions = {
     depthTest?: boolean;
     fog?: boolean;
     scale?: number;
+    pixelRatio?: number;
     maxParticleCount?: number;
 };
 
