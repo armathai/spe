@@ -3,7 +3,7 @@ import { Clock, PerspectiveCamera, TextureLoader, Vector3, WebGLRenderer } from 
 
 import Stats from 'stats.js';
 import { SceneBase } from './scene-base';
-import { FountainScene } from './scenes/fountain-scene';
+import { CloudMovesScene } from './scenes/clound-moves-scene';
 
 new (class {
     private _loader: TextureLoader;
@@ -43,12 +43,11 @@ new (class {
         this._renderer.setPixelRatio(window.devicePixelRatio);
 
         // CAMERA
-        this._camera = new PerspectiveCamera(75, 1, 1, 1000);
-        // this._camera.position.set(0, 12, 14);
+        this._camera = new PerspectiveCamera(75, 1, 0.1, 10000);
         this._camera.lookAt(new Vector3(0, 0, 0));
 
         // SCENE
-        this._scene = new FountainScene(this._loader);
+        this._scene = new CloudMovesScene(this._loader, this._camera, this._renderer);
 
         // CLOCK
         this._clock = new Clock();

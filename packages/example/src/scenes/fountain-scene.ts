@@ -15,6 +15,7 @@ export class FountainScene extends SceneBase {
             texture: {
                 value: this._smokeTexture,
             },
+            pixelRatio: this.renderer.getPixelRatio(),
         });
         const emitter = new Emitter({
             maxAge: {
