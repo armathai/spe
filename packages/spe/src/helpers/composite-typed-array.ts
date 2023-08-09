@@ -21,6 +21,10 @@ export class CompositeTypedArray {
         return this._size;
     }
 
+    public get componentSize(): number {
+        return this._componentSize;
+    }
+
     /**
      * Sets the size of the internal array.
      *
@@ -111,8 +115,8 @@ export class CompositeTypedArray {
      * @return {SPE.TypedArrayHelper} Instance of this class.
      */
     public setFromArray(index: number, array: TypedArray): this {
-        const sourceArraySize = array.length,
-            newSize = index + sourceArraySize;
+        const sourceArraySize = array.length;
+        const newSize = index + sourceArraySize;
 
         if (newSize > this._array.length) {
             this.grow(newSize);
@@ -145,8 +149,8 @@ export class CompositeTypedArray {
      * @return {SPE.TypedArrayHelper} Instance of this class.
      */
     public setVec2Components(index: number, x: number, y: number): this {
-        const array = this._array,
-            i = this._indexOffset + index * this._componentSize;
+        const array = this._array;
+        const i = this._indexOffset + index * this._componentSize;
 
         array[i] = x;
         array[i + 1] = y;
@@ -174,8 +178,8 @@ export class CompositeTypedArray {
      * @return {SPE.TypedArrayHelper} Instance of this class.
      */
     public setVec3Components(index: number, x: number, y: number, z: number): this {
-        const array = this._array,
-            i = this._indexOffset + index * this._componentSize;
+        const array = this._array;
+        const i = this._indexOffset + index * this._componentSize;
 
         array[i] = x;
         array[i + 1] = y;
@@ -205,8 +209,8 @@ export class CompositeTypedArray {
      * @return {SPE.TypedArrayHelper} Instance of this class.
      */
     public setVec4Components(index: number, x: number, y: number, z: number, w: number): this {
-        const array = this._array,
-            i = this._indexOffset + index * this._componentSize;
+        const array = this._array;
+        const i = this._indexOffset + index * this._componentSize;
 
         array[i] = x;
         array[i + 1] = y;

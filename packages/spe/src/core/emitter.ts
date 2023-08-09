@@ -196,7 +196,7 @@ export class Emitter {
     private _size: EmitterSize;
     private _angle: EmitterAngle;
     private _particleCount: number;
-    private _duration: number; // ToDo: it's wrong to have this type
+    private _duration: number;
     private _isStatic: boolean;
     private _activeMultiplier: number;
     private _direction: number;
@@ -529,15 +529,14 @@ export class Emitter {
     }
 
     public calculatePPSValue(groupMaxAge: number): void {
-        const particleCount = this._particleCount;
-
         // Calculate the `particlesPerSecond` value for this emitter. It's used
         // when determining which particles should die and which should live to
         // see another day. Or be born, for that matter. The "God" property.
         if (this._duration !== -1) {
-            this._particlesPerSecond = particleCount / (groupMaxAge < this._duration ? groupMaxAge : this._duration);
+            this._particlesPerSecond =
+                this._particleCount / (groupMaxAge < this._duration ? groupMaxAge : this._duration);
         } else {
-            this._particlesPerSecond = particleCount / groupMaxAge;
+            this._particlesPerSecond = this._particleCount / groupMaxAge;
         }
     }
 

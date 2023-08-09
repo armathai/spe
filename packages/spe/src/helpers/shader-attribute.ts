@@ -104,12 +104,11 @@ export class ShaderAttribute {
      * updating. Also marks the attribute as needing an update.
      */
     public flagUpdate(): void {
-        const attr = this._bufferAttribute;
-        const range = attr!.updateRange;
+        const range = this._bufferAttribute!.updateRange;
 
         range.offset = this._updateMin;
         range.count = Math.min(this._updateMax - this._updateMin + this._componentSize, this._typedArray!.array.length);
-        attr!.needsUpdate = true;
+        this._bufferAttribute!.needsUpdate = true;
     }
 
     /**

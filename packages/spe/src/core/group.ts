@@ -2,6 +2,7 @@
 import {
     AdditiveBlending,
     Blending,
+    BufferAttribute,
     BufferGeometry,
     Color,
     IUniform,
@@ -293,26 +294,24 @@ export class Group {
     }
 
     public updateDefines(): void {
-        const emitters = this._emitters;
-        const defines = this._defines;
-
-        for (let i = emitters.length - 1; i >= 0; --i) {
-            const emitter = emitters[i];
+        for (let i = this._emitters.length - 1; i >= 0; --i) {
+            const emitter = this._emitters[i];
 
             // Only do angle calculation if there's no spritesheet defined.
             //
             // Saves calculations being done and then overwritten in the shaders.
-            if (!defines.SHOULD_CALCULATE_SPRITE) {
-                defines.SHOULD_ROTATE_TEXTURE =
-                    defines.SHOULD_ROTATE_TEXTURE ||
+            if (!this._defines.SHOULD_CALCULATE_SPRITE) {
+                this._defines.SHOULD_ROTATE_TEXTURE =
+                    this._defines.SHOULD_ROTATE_TEXTURE ||
                     !!Math.max(Math.max.apply(null, emitter.angle.value), Math.max.apply(null, emitter.angle.spread));
             }
 
-            defines.SHOULD_ROTATE_PARTICLES =
-                defines.SHOULD_ROTATE_PARTICLES || !!Math.max(emitter.rotation.angle, emitter.rotation.angleSpread);
+            this._defines.SHOULD_ROTATE_PARTICLES =
+                this._defines.SHOULD_ROTATE_PARTICLES ||
+                !!Math.max(emitter.rotation.angle, emitter.rotation.angleSpread);
 
-            defines.SHOULD_WIGGLE_PARTICLES =
-                defines.SHOULD_WIGGLE_PARTICLES || !!Math.max(emitter.wiggle.value, emitter.wiggle.spread);
+            this._defines.SHOULD_WIGGLE_PARTICLES =
+                this._defines.SHOULD_WIGGLE_PARTICLES || !!Math.max(emitter.wiggle.value, emitter.wiggle.spread);
         }
 
         this._material.needsUpdate = true;
@@ -325,19 +324,9 @@ export class Group {
      * @param {Emitter} emitter The emitter to add to this group.
      */
     public addEmitter(emitter: Emitter): Group {
-        // Ensure an actual emitter instance is passed here.
-        //
-        // Decided not to throw here, just in case a scene's
-        // rendering would be paused. Logging an error instead
-        // of stopping execution if exceptions aren't caught.
-        if (emitter instanceof Emitter === false) {
-            console.error('`emitter` argument must be instance of SPE.Emitter. Was provided with:', emitter);
-            return this;
-        }
-
         // If the emitter already exists as a member of this group, then
         // stop here, we don't want to add it again.
-        else if (this._emitterIDs.indexOf(emitter.uuid) > -1) {
+        if (this._emitterIDs.indexOf(emitter.uuid) > -1) {
             console.error('Emitter already exists in this group. Will not add again.');
             return this;
         }
@@ -349,7 +338,6 @@ export class Group {
             return this;
         }
 
-        const attributes = this._attributes;
         const start = this._particleCount;
         const end = start + emitter.particleCount;
 
@@ -385,11 +373,11 @@ export class Group {
 
         // Ensure the attributes and their BufferAttributes exist, and their
         // TypedArrays are of the correct size.
-        for (const attr in attributes) {
-            if (attributes.hasOwnProperty(attr)) {
+        for (const attr in this._attributes) {
+            if (this._attributes.hasOwnProperty(attr)) {
                 // When creating a buffer, pass through the maxParticle count
                 // if one is specified.
-                attributes[attr as keyof GroupAttributesMap].createBufferAttribute(
+                this._attributes[attr as keyof GroupAttributesMap].createBufferAttribute(
                     this._maxParticleCount !== null ? this._maxParticleCount : this._particleCount,
                 );
             }
@@ -425,6 +413,13 @@ export class Group {
         // ToDo there is no needsUpdate property on BufferGeometry,
         // but actually there is no need in it because it updates in _applyAttributesToGeometry call above
         // this._geometry.needsUpdate = true;
+        for (const key in this._geometry.attributes) {
+            if (Object.prototype.hasOwnProperty.call(this._geometry.attributes, key)) {
+                const attr = this._geometry.attributes[key];
+                attr.needsUpdate = true;
+            }
+        }
+
         this._attributesNeedRefresh = true;
 
         // Return the group to enable chaining.
@@ -501,12 +496,9 @@ export class Group {
      * @return {Emitter|null}
      */
     public getFromPool(): Emitter | undefined {
-        const pool = this._pool;
-        const createNew = this._createNewWhenPoolEmpty;
-
-        if (pool.length) {
-            return pool.pop();
-        } else if (createNew) {
+        if (this._pool.length) {
+            return this._pool.pop();
+        } else if (this._createNewWhenPoolEmpty) {
             // ToDo this part is working not correctly,
             // const emitter = new Emitter(this._poolCreationSettings);
 
@@ -601,11 +593,8 @@ export class Group {
      * @param  {Number} [dt=Group's `fixedTimeStep` value] The number of seconds to simulate the group's emitters for (deltaTime)
      */
     public tick(dt?: number): void {
-        const emitters = this._emitters;
-        const numEmitters = emitters.length;
+        const numEmitters = this._emitters.length;
         const deltaTime = dt || this._fixedTimeStep;
-        const keys = this._attributeKeys;
-        const attrs = this._attributes;
 
         // Update uniform values.
         this._updateUniforms(deltaTime);
@@ -622,7 +611,7 @@ export class Group {
         // simulate it, then update the shader attribute
         // buffers.
         for (let i = 0, emitter; i < numEmitters; ++i) {
-            emitter = emitters[i];
+            emitter = this._emitters[i];
             emitter.tick(deltaTime);
             this._updateBuffers(emitter);
         }
@@ -633,7 +622,7 @@ export class Group {
         // what they should be.
         if (this._attributesNeedDynamicReset === true) {
             for (let i = this._attributeCount - 1; i >= 0; --i) {
-                attrs[keys[i]].resetDynamic();
+                this._attributes[this._attributeKeys[i]].resetDynamic();
             }
 
             this._attributesNeedDynamicReset = false;
@@ -644,7 +633,7 @@ export class Group {
         // needing so.
         if (this._attributesNeedRefresh === true) {
             for (let i = this._attributeCount - 1; i >= 0; --i) {
-                attrs[keys[i]].forceUpdateAll();
+                this._attributes[this._attributeKeys[i]].forceUpdateAll();
             }
 
             this._attributesNeedRefresh = false;
@@ -701,54 +690,44 @@ export class Group {
     }
 
     private _resetBufferRanges(): void {
-        const keys = this._attributeKeys;
-        const attrs = this._attributes;
-
         for (let i = this._attributeCount - 1; i >= 0; --i) {
-            attrs[keys[i]].resetUpdateRange();
+            this._attributes[this._attributeKeys[i]].resetUpdateRange();
         }
     }
 
     private _updateBuffers(emitter: Emitter): void {
-        const keys = this._attributeKeys;
-        const attrs = this._attributes;
-        const emitterRanges = emitter.bufferUpdateRanges;
-
         for (let i = this._attributeCount - 1; i >= 0; --i) {
-            const key = keys[i];
-            const emitterAttr = emitterRanges[key]!;
-            const attr = attrs[key];
+            const key = this._attributeKeys[i];
+            const emitterAttr = emitter.bufferUpdateRanges[key]!;
+            const attr = this._attributes[key];
             attr.setUpdateRange(emitterAttr.min, emitterAttr.max);
             attr.flagUpdate();
         }
     }
 
     private _applyAttributesToGeometry(): void {
-        const attributes = this._attributes;
-        const geometry = this._geometry;
-        // const geometryAttributes = geometry.attributes;
-
         // Loop through all the shader attributes and assign (or re-assign)
         // typed array buffers to each one.
-        for (const attr in attributes) {
-            if (attributes.hasOwnProperty(attr as keyof GroupAttributesMap)) {
-                const attribute = attributes[attr as keyof GroupAttributesMap];
-                // const geometryAttribute = geometryAttributes[attr];
+        for (const attr in this._attributes) {
+            if (this._attributes.hasOwnProperty(attr as keyof GroupAttributesMap)) {
+                const attribute = this._attributes[attr as keyof GroupAttributesMap];
+                const geometryAttribute = this._geometry.attributes[attr];
 
                 // Update the array if this attribute exists on the geometry.
                 //
                 // This needs to be done because the attribute's typed array might have
                 // been resized and reinstantiated, and might now be looking at a
                 // different ArrayBuffer, so reference needs updating.
-                // if (geometryAttribute) {
-                // ToDo: There is something wrong because array is Readonly property
-                // geometryAttribute.array = attribute.typedArray!.array;
-                // }
+                if (geometryAttribute) {
+                    const { array, componentSize } = attribute.typedArray!;
+                    (geometryAttribute as BufferAttribute).copy(new BufferAttribute(array, componentSize));
+                    geometryAttribute.needsUpdate = true;
+                }
 
                 // Add the attribute to the geometry if it doesn't already exist.
-                // else {
-                geometry.setAttribute(attr, attribute.bufferAttribute!);
-                // }
+                else {
+                    this._geometry.setAttribute(attr, attribute.bufferAttribute!);
+                }
 
                 // Mark the attribute as needing an update the next time a frame is rendered.
                 attribute.bufferAttribute!.needsUpdate = true;
