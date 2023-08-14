@@ -567,6 +567,10 @@ export class Group {
         // Call the emitter's remove method.
         emitter.onRemove();
 
+        this._applyAttributesToGeometry();
+
+        this.updateDefines();
+
         // Set a flag to indicate that the attribute buffers should
         // be updated in their entirety on the next frame.
         this._attributesNeedRefresh = true;

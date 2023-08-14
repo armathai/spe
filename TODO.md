@@ -2,8 +2,6 @@
 
 ##### **`SPE`**
 
--   `Fix removeEmitter logic`
-
 -   `Fix devicePixelRatio and perspectiveScale issue see cloudMoves example`
 
 -   `Fix transparent/alphaTest issue see runtimeChanging example`
