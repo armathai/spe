@@ -4,7 +4,7 @@ import { Color, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
 
-export class DistributionsScene extends SceneBase {
+export class RotationScene extends SceneBase {
     private _smokeTexture: Texture;
 
     public update(dt?: number): void {
@@ -41,15 +41,16 @@ export class DistributionsScene extends SceneBase {
                     radius: 5,
                     spread: new Vector3(3, 3, 3),
                 },
-
                 color: {
                     value: [new Color('white'), new Color('red')],
                 },
-
                 size: {
                     value: 1,
                 },
-                isStatic: true,
+                rotation: {
+                    axis: new Vector3(Math.random(), Math.random(), Math.random()),
+                    angle: Math.random() * Math.PI,
+                },
                 particleCount: 250,
             });
 
@@ -70,16 +71,16 @@ export class DistributionsScene extends SceneBase {
                     spread: new Vector3(5, 5, 5),
                     spreadClamp: new Vector3(2, 2, 2),
                 },
-
                 color: {
                     value: [new Color('white'), new Color('red')],
                 },
-
                 size: {
                     value: 1,
                 },
-                isStatic: true,
-
+                rotation: {
+                    axis: new Vector3(Math.random(), Math.random(), Math.random()),
+                    angle: Math.random() * Math.PI,
+                },
                 particleCount: 500,
             });
 
@@ -99,20 +100,20 @@ export class DistributionsScene extends SceneBase {
                     radius: 5,
                     spread: i === 1 ? new Vector3(3, 3, 3) : undefined,
                 },
-
                 velocity: {
                     value: new Vector3(3, 3, 3),
                     distribution: Distribution.sphere,
                 },
-
                 color: {
                     value: [new Color('white'), new Color('red')],
                 },
-
                 size: {
                     value: 1,
                 },
-
+                rotation: {
+                    axis: new Vector3(Math.random(), Math.random(), Math.random()),
+                    angle: Math.random() * Math.PI,
+                },
                 particleCount: 250,
             });
 
@@ -132,20 +133,20 @@ export class DistributionsScene extends SceneBase {
                     radius: 5,
                     spread: i === 1 ? new Vector3(3, 3, 3) : undefined,
                 },
-
                 velocity: {
                     value: new Vector3(3, 3, 3),
                     distribution: Distribution.disc,
                 },
-
                 color: {
                     value: [new Color('white'), new Color('red')],
                 },
-
                 size: {
                     value: 1,
                 },
-
+                rotation: {
+                    axis: new Vector3(Math.random(), Math.random(), Math.random()),
+                    angle: Math.random() * Math.PI,
+                },
                 particleCount: 250,
             });
 
@@ -165,20 +166,20 @@ export class DistributionsScene extends SceneBase {
                     radius: 5,
                     spread: i === 1 ? new Vector3(3, 3, 3) : undefined,
                 },
-
                 velocity: {
                     value: new Vector3(3, 3, 3),
                     distribution: Distribution.box,
                 },
-
                 color: {
                     value: [new Color('white'), new Color('red')],
                 },
-
                 size: {
                     value: 1,
                 },
-
+                rotation: {
+                    axis: new Vector3(Math.random(), Math.random(), Math.random()),
+                    angle: Math.random() * Math.PI,
+                },
                 particleCount: 250,
             });
 

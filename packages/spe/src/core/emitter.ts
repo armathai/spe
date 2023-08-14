@@ -516,6 +516,14 @@ export class Emitter {
         return this._bufferUpdateRanges;
     }
 
+    public get activeMultiplier(): number {
+        return this._activeMultiplier;
+    }
+
+    public set activeMultiplier(value: number) {
+        this._activeMultiplier = value;
+    }
+
     public setBufferUpdateRanges(keys: Array<keyof GroupAttributesMap>): void {
         this._attributeKeys = keys;
         this._attributeCount = keys.length;

@@ -89,16 +89,16 @@ export class Group {
     private _texture: Texture | null;
     private _textureFrames: Vector2;
     private _textureFrameCount: number;
-    private _textureLoop: number;
+    private _textureLoop: number; // Updatable
 
-    private _hasPerspective: boolean;
-    private _colorize: boolean;
+    private _hasPerspective: boolean; // Updatable
+    private _colorize: boolean; // Updatable
     private _maxParticleCount: number | null;
-    private _blending: Blending;
-    private _transparent: boolean;
-    private _alphaTest: number;
-    private _depthWrite: boolean;
-    private _depthTest: boolean;
+    private _blending: Blending; // Updatable
+    private _transparent: boolean; // Updatable
+    private _alphaTest: number; // Updatable
+    private _depthWrite: boolean; // Updatable
+    private _depthTest: boolean; // Updatable
     private _fog: boolean;
     private _scale: number;
     private _pixelRatio: number;
@@ -289,8 +289,92 @@ export class Group {
         }
     }
 
+    public get textureLoop(): number {
+        return this._textureLoop;
+    }
+
+    public set textureLoop(value: number) {
+        this._textureLoop = value;
+        this._uniforms.textureAnimation.value.w = value;
+    }
+
+    public get blending(): Blending {
+        return this._blending;
+    }
+
+    public set blending(value: Blending) {
+        this._blending = value;
+        this._material.blending = value;
+    }
+
+    public get colorize(): boolean {
+        return this._colorize;
+    }
+
+    public set colorize(value: boolean) {
+        this._colorize = value;
+        this._defines.COLORIZE = value;
+    }
+
+    public get hasPerspective(): boolean {
+        return this._hasPerspective;
+    }
+
+    public set hasPerspective(value: boolean) {
+        this._hasPerspective = value;
+        this._defines.HAS_PERSPECTIVE = value;
+    }
+
+    public get transparent(): boolean {
+        return this._transparent;
+    }
+
+    public set transparent(value: boolean) {
+        this._transparent = value;
+        this._material.transparent = value;
+    }
+
+    public get alphaTest(): number {
+        return this._alphaTest;
+    }
+
+    public set alphaTest(value: number) {
+        this._alphaTest = value;
+        this._material.alphaTest = value;
+    }
+
+    public get depthWrite(): boolean {
+        return this._depthWrite;
+    }
+
+    public set depthWrite(value: boolean) {
+        this._depthWrite = value;
+        this._material.depthWrite = value;
+    }
+
+    public get depthTest(): boolean {
+        return this._depthTest;
+    }
+
+    public set depthTest(value: boolean) {
+        this._depthTest = value;
+        this._material.depthTest = value;
+    }
+
     public get mesh(): Points {
         return this._mesh;
+    }
+
+    public get material(): ShaderMaterial {
+        return this._material;
+    }
+
+    public get uniforms(): { [uniform: string]: IUniform } {
+        return this._uniforms;
+    }
+
+    public get defines(): { [key: string]: unknown } {
+        return this._defines;
     }
 
     public updateDefines(): void {

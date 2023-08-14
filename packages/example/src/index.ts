@@ -3,7 +3,7 @@ import { Clock, PerspectiveCamera, TextureLoader, Vector3, WebGLRenderer } from 
 
 import Stats from 'stats.js';
 import { SceneBase } from './scene-base';
-import { DistributionsScene } from './scenes/distributions-scene';
+import { FountainScene } from './scenes/fountain-scene';
 
 new (class {
     private _loader: TextureLoader;
@@ -47,7 +47,7 @@ new (class {
         this._camera.lookAt(new Vector3(0, 0, 0));
 
         // SCENE
-        this._scene = new DistributionsScene(this._loader, this._camera, this._renderer);
+        this._scene = new FountainScene(this._loader, this._camera, this._renderer);
 
         // CLOCK
         this._clock = new Clock();

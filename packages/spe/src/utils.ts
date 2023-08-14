@@ -1,4 +1,4 @@
-import { Color, MathUtils, Vector2, Vector3, Vector4 } from 'three';
+import { Color, LinearSRGBColorSpace, MathUtils, Vector2, Vector3, Vector4 } from 'three';
 import { clamp } from 'three/src/math/MathUtils';
 import { ShaderAttribute } from './helpers/shader-attribute';
 import { AConstructorTypeOf, ObjectType } from './types';
@@ -615,7 +615,9 @@ export const getPackedRotationAxis = (() => {
         v.normalize().add(addOne).multiplyScalar(0.5);
 
         c.setRGB(v.x, v.y, v.z);
+        // const hex =
+        //     (clamp(v.x * 255, 0, 255) << 16) ^ (clamp(v.y * 255, 0, 255) << 8) ^ (clamp(v.z * 255, 0, 255) << 0);
 
-        return c.getHex();
+        return c.getHex(LinearSRGBColorSpace);
     };
 })();

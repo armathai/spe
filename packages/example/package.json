@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@armathai/spe": "*",
+        "lil-gui": "^0.18.2",
         "stats.js": "^0.17.0",
         "three": "^0.155.0"
     },

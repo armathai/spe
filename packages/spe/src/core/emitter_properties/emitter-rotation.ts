@@ -23,7 +23,7 @@ export class EmitterRotation {
         randomize: boolean | undefined,
         private _emitter: Emitter,
     ) {
-        this._axis = ensureInstanceOf(axis, Vector3, new Vector3(0.0, 1.0, 0.0));
+        this._axis = ensureInstanceOf(axis, Vector3, new Vector3(0, 1, 0));
         this._axisSpread = ensureInstanceOf(axisSpread, Vector3, new Vector3());
         this._angle = ensureTypedArg(angle, 'number', 0);
         this._angleSpread = ensureTypedArg(angleSpread, 'number', 0);
