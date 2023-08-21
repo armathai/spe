@@ -9,7 +9,6 @@ import { SceneBase } from '../scene-base';
 export class RuntimeChangingScene extends SceneBase {
     private _spriteFlameTexture: Texture;
     private _emitter: Emitter;
-    private _gui: Texture;
 
     protected async init(): Promise<void> {
         await super.init();
@@ -98,7 +97,7 @@ export class RuntimeChangingScene extends SceneBase {
     }
 
     protected initGUI(): void {
-        const gui = new GUI();
+        const gui = new GUI({ closeFolders: true });
         const vec3Components = ['x', 'y', 'z'];
         let i;
 

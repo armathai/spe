@@ -7,9 +7,10 @@
 -   `Fix transparent/alphaTest issue see runtimeChanging example`
 -   `Test depthWrite/depthTest params logics in runtimeChanging example`
 
--   `Fix pool example`
-
 -   `Fix time issue in explosion example, after 20-30s the explosion interval time gets messed up.`
+
+-   `Fix pool example`
+-   `addEmitter after removeEmitter is not working when there is multiple emitters see DistributionsScene example`
 
 </br>
 
