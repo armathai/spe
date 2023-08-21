@@ -9,8 +9,8 @@ export const shaders = {
         shaderChunks.varyings,
 
         ShaderChunk.common,
-        ShaderChunk.logdepthbuf_pars_vertex,
         ShaderChunk.fog_pars_vertex,
+        ShaderChunk.logdepthbuf_pars_vertex,
 
         shaderChunks.branchAvoidanceFunctions,
         shaderChunks.unpackColor,
@@ -151,6 +151,8 @@ export const shaders = {
         shaderChunks.uniforms,
 
         ShaderChunk.common,
+        // ShaderChunk.alphatest_pars_fragment,
+        // ShaderChunk.alphahash_pars_fragment,
         ShaderChunk.fog_pars_fragment,
         ShaderChunk.logdepthbuf_pars_fragment,
 
@@ -161,9 +163,11 @@ export const shaders = {
         'void main() {',
         '    vec3 outgoingLight = vColor.xyz;',
         '    ',
-        '    #ifdef ALPHATEST',
-        '       if ( vColor.w < float(ALPHATEST) ) discard;',
-        '    #endif',
+
+        // This part is replaced by "ShaderChunk.alphatest_fragment"
+        // '    #ifdef ALPHATEST',
+        // '       if ( vColor.w < float(ALPHATEST) ) discard;',
+        // '    #endif',
 
         shaderChunks.rotateTexture,
 
@@ -172,7 +176,23 @@ export const shaders = {
         '    outgoingLight = vColor.xyz * rotatedTexture.xyz;',
         '    gl_FragColor = vec4( outgoingLight.xyz, rotatedTexture.w * vColor.w );',
 
+        // ShaderChunk.alphatest_fragment,
+        // ShaderChunk.alphahash_fragment,
+
+        // This part replaces "ShaderChunk.opaque_fragment"
+        '   #ifdef OPAQUE',
+        '     gl_FragColor.a = 1.0;',
+        '   #endif',
+
+        '   #ifdef USE_TRANSMISSION',
+        '     vColor.a *= material.transmissionAlpha;',
+        '   #endif',
+        // .................
+
+        ShaderChunk.tonemapping_fragment,
+        // ShaderChunk.colorspace_fragment,
         ShaderChunk.fog_fragment,
+        ShaderChunk.premultiplied_alpha_fragment,
 
         '}',
     ].join('\n'),

@@ -4,7 +4,7 @@
 
 -   `Fix devicePixelRatio and perspectiveScale issue see cloudMoves example`
 
--   `Fix transparent/alphaTest issue see runtimeChanging example`
+-   `Fix alphaTest issue see runtimeChanging example`
 -   `Test depthWrite/depthTest params logics in runtimeChanging example`
 
 -   `Fix time issue in explosion example, after 20-30s the explosion interval time gets messed up.`
