@@ -228,6 +228,10 @@ export class Group {
                 // type: 'f',
                 value: this._scale * this._pixelRatio,
             },
+            alphaTest: {
+                // type: 'f',
+                value: this._alphaTest,
+            },
         };
 
         // Add some defines into the mix...
@@ -340,7 +344,7 @@ export class Group {
 
     public set alphaTest(value: number) {
         this._alphaTest = value;
-        this._material.alphaTest = value;
+        this._material.uniforms.alphaTest.value = value;
     }
 
     public get depthWrite(): boolean {
