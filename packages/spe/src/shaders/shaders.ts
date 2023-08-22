@@ -161,11 +161,10 @@ export const shaders = {
         'void main() {',
         '    vec3 outgoingLight = vColor.xyz;',
         '    ',
+        ShaderChunk.logdepthbuf_fragment,
         '    if ( vColor.w < float(alphaTest) ) discard;',
 
         shaderChunks.rotateTexture,
-
-        ShaderChunk.logdepthbuf_fragment,
 
         '    outgoingLight = vColor.xyz * rotatedTexture.xyz;',
         '    gl_FragColor = vec4( outgoingLight.xyz, rotatedTexture.w * vColor.w );',
