@@ -33,8 +33,6 @@ new (class {
 
         // RENDERER
         this._renderer = new WebGLRenderer({
-            // canvas: document.getElementById('game_canvas') as HTMLCanvasElement;,
-            alpha: false,
             antialias: false,
             precision: 'highp',
             powerPreference: 'high-performance',
@@ -54,6 +52,18 @@ new (class {
 
         // STATS
         this._stats = new Stats();
+
+        const pixelRatio = this._renderer.getPixelRatio();
+
+        this._stats.dom.style.cssText = `
+                position:absolute;
+                top:0;
+                right:0;
+                transform-origin:right top;
+                transform: scale(${pixelRatio}, ${pixelRatio});
+                cursor:pointer;
+                opacity:0.9;
+            `;
         this._stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
         document.body.appendChild(this._stats.dom);
     };
