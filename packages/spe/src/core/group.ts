@@ -226,7 +226,11 @@ export class Group {
             },
             scale: {
                 // type: 'f',
-                value: this._scale * this._pixelRatio,
+                value: this._scale,
+            },
+            pixelRatio: {
+                // type: 'f',
+                value: this._pixelRatio,
             },
             alphaTest: {
                 // type: 'f',

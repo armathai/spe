@@ -77,13 +77,17 @@ export const shaders = {
 
         // Determine perspective
         '    #ifdef HAS_PERSPECTIVE',
-        '        float perspective = scale / length( mvPosition.xyz );',
+        '        bool isPerspective = isPerspectiveMatrix( projectionMatrix );',
+        '        float perspective = 1.0;',
+        '        if ( isPerspective ) {',
+        '           perspective = scale / (- mvPosition.z);',
+        '        }',
         '    #else',
         '        float perspective = 1.0;',
         '    #endif',
 
         // Apply perpective to pointSize value
-        '    float pointSizePerspective = pointSize * perspective;',
+        '    float pointSizePerspective = pointSize * perspective * pixelRatio;',
 
         //
         // Appearance

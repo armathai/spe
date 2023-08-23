@@ -9,6 +9,7 @@ export const shaderChunks = {
         'uniform sampler2D tex;',
         'uniform vec4 textureAnimation;',
         'uniform float scale;',
+        'uniform float pixelRatio;',
         'uniform float alphaTest;',
     ].join('\n'),
 
