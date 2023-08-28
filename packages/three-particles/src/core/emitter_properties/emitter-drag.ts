@@ -1,19 +1,22 @@
 import { EmitterProperty } from '../../types';
 import { ensureTypedArg } from '../../utils';
-import { Emitter } from '../emitter';
+import { ParticleEmitter } from '../emitter';
 
-export class EmitterMaxAge {
-    private _propName: EmitterProperty = EmitterProperty.maxAge;
+export class EmitterDrag {
+    private _propName: EmitterProperty = EmitterProperty.drag;
     private _value: number;
     private _spread: number;
+    private _randomize: boolean;
 
     public constructor(
         value: number | undefined,
         spread: number | undefined,
-        private _emitter: Emitter,
+        randomize: boolean | undefined,
+        private _emitter: ParticleEmitter,
     ) {
-        this._value = ensureTypedArg(value, 'number', 2);
+        this._value = ensureTypedArg(value, 'number', 0);
         this._spread = ensureTypedArg(spread, 'number', 0);
+        this._randomize = ensureTypedArg(randomize, 'boolean', false);
     }
 
     public get value(): number {
@@ -26,7 +29,7 @@ export class EmitterMaxAge {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._value = value;
     }
@@ -41,8 +44,22 @@ export class EmitterMaxAge {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._spread = value;
+    }
+
+    public get randomize(): boolean {
+        return this._randomize;
+    }
+
+    public set randomize(value: boolean) {
+        const mapName = this._emitter.updateMap[this._propName]!;
+
+        this._emitter.resetFlags[mapName] = value;
+
+        this._emitter.system!.updateDefines();
+
+        this._randomize = value;
     }
 }

@@ -1,4 +1,4 @@
-import { Emitter, Group } from '@armathai/spe';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
 import { Color, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
@@ -36,7 +36,7 @@ export class MultipleEmittersScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
@@ -44,7 +44,7 @@ export class MultipleEmittersScene extends SceneBase {
         });
 
         for (let i = 0; i < this._numEmitters; ++i) {
-            const emitter = new Emitter({
+            const emitter = new ParticleEmitter({
                 maxAge: {
                     value: 5,
                 },
@@ -89,9 +89,9 @@ export class MultipleEmittersScene extends SceneBase {
                 },
             });
 
-            this.particleGroup.addEmitter(emitter);
+            this.particleSystem.addEmitter(emitter);
         }
 
-        this.add(this.particleGroup.mesh);
+        this.add(this.particleSystem.mesh);
     }
 }

@@ -1,5 +1,5 @@
-import { Emitter, Group } from '@armathai/spe';
-import { Distribution } from '@armathai/spe/dist/types';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
+import { Distribution } from '@armathai/three-particles/dist/types';
 import { Color, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
@@ -20,18 +20,18 @@ export class DistributionsScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
             // pixelRatio: this.renderer.getPixelRatio(),
         });
 
-        const emitters: Emitter[] = [];
+        const emitters: ParticleEmitter[] = [];
 
         // General distributions.
         for (let i = 1; i < 4; ++i) {
-            const emitter = new Emitter({
+            const emitter = new ParticleEmitter({
                 type: i,
                 maxAge: {
                     value: 1,
@@ -54,12 +54,12 @@ export class DistributionsScene extends SceneBase {
             });
 
             emitters.push(emitter);
-            this.particleGroup.addEmitter(emitter);
+            this.particleSystem.addEmitter(emitter);
         }
 
         // Spread clamping.
         for (let i = 1; i < 4; ++i) {
-            const emitter = new Emitter({
+            const emitter = new ParticleEmitter({
                 type: i,
                 maxAge: {
                     value: 1,
@@ -84,12 +84,12 @@ export class DistributionsScene extends SceneBase {
             });
 
             emitters.push(emitter);
-            this.particleGroup.addEmitter(emitter);
+            this.particleSystem.addEmitter(emitter);
         }
 
         // Spherical velocity distributions.
         for (let i = 1; i < 4; ++i) {
-            const emitter = new Emitter({
+            const emitter = new ParticleEmitter({
                 type: i,
                 maxAge: {
                     value: 1,
@@ -117,12 +117,12 @@ export class DistributionsScene extends SceneBase {
             });
 
             emitters.push(emitter);
-            this.particleGroup.addEmitter(emitter);
+            this.particleSystem.addEmitter(emitter);
         }
 
         // Disc velocity distributions.
         for (let i = 1; i < 4; ++i) {
-            const emitter = new Emitter({
+            const emitter = new ParticleEmitter({
                 type: i,
                 maxAge: {
                     value: 1,
@@ -150,12 +150,12 @@ export class DistributionsScene extends SceneBase {
             });
 
             emitters.push(emitter);
-            this.particleGroup.addEmitter(emitter);
+            this.particleSystem.addEmitter(emitter);
         }
 
         // Box velocity distributions.
         for (let i = 1; i < 4; ++i) {
-            const emitter = new Emitter({
+            const emitter = new ParticleEmitter({
                 type: i,
                 maxAge: {
                     value: 1,
@@ -183,9 +183,9 @@ export class DistributionsScene extends SceneBase {
             });
 
             emitters.push(emitter);
-            this.particleGroup.addEmitter(emitter);
+            this.particleSystem.addEmitter(emitter);
         }
 
-        this.add(this.particleGroup.mesh);
+        this.add(this.particleSystem.mesh);
     }
 }

@@ -1,5 +1,5 @@
 {
-    "name": "@armathai/spe",
+    "name": "@armathai/three-particles",
     "version": "1.0.0",
     "license": "MIT",
     "source": "src/index.ts",
@@ -12,10 +12,10 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git@github.com:armathai/spe.git"
+        "url": "git@github.com:armathai/particles3d.git"
     },
     "bugs": {
-        "url": "https://github.com/armathai/spe/issues"
+        "url": "https://github.com/armathai/particles3d/issues"
     },
     "keywords": [
         "three.js",
@@ -26,7 +26,7 @@
         "shader",
         "spe"
     ],
-    "homepage": "https://github.com/armathai/spe#readme",
+    "homepage": "https://github.com/armathai/particles3d#readme",
     "scripts": {
         "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
         "test": "jest --config jestconfig.json",

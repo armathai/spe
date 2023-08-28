@@ -1,18 +1,18 @@
 import { EmitterProperty } from '../../types';
 import { ensureTypedArg } from '../../utils';
-import { Emitter } from '../emitter';
+import { ParticleEmitter } from '../emitter';
 
-export class EmitterWiggle {
-    private _propName: EmitterProperty = EmitterProperty.wiggle;
+export class EmitterMaxAge {
+    private _propName: EmitterProperty = EmitterProperty.maxAge;
     private _value: number;
     private _spread: number;
 
     public constructor(
         value: number | undefined,
         spread: number | undefined,
-        private _emitter: Emitter,
+        private _emitter: ParticleEmitter,
     ) {
-        this._value = ensureTypedArg(value, 'number', 0);
+        this._value = ensureTypedArg(value, 'number', 2);
         this._spread = ensureTypedArg(spread, 'number', 0);
     }
 
@@ -26,7 +26,7 @@ export class EmitterWiggle {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._value = value;
     }
@@ -41,7 +41,7 @@ export class EmitterWiggle {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._spread = value;
     }

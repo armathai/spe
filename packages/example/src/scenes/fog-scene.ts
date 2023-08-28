@@ -1,5 +1,5 @@
-import { Emitter, Group } from '@armathai/spe';
-import { Distribution } from '@armathai/spe/dist/types';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
+import { Distribution } from '@armathai/three-particles/dist/types';
 import { BoxGeometry, Fog, Mesh, MeshBasicMaterial, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
@@ -30,14 +30,14 @@ export class FogScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
             fog: true,
             pixelRatio: this.renderer.getPixelRatio(),
         });
-        const emitter = new Emitter({
+        const emitter = new ParticleEmitter({
             type: Distribution.box,
             maxAge: { value: 2 },
             position: {
@@ -47,7 +47,7 @@ export class FogScene extends SceneBase {
             particleCount: 20000,
             isStatic: true,
         });
-        this.particleGroup.addEmitter(emitter);
-        this.add(this.particleGroup.mesh);
+        this.particleSystem.addEmitter(emitter);
+        this.add(this.particleSystem.mesh);
     }
 }

@@ -19,7 +19,7 @@ import { ComponentSize, ShaderAttribute } from '../helpers/shader-attribute';
 import { shaders } from '../shaders/shaders';
 import { EmitterOptions, GroupAttributesMap, GroupOptions } from '../types';
 import { ensureInstanceOf, ensureTypedArg } from '../utils';
-import { Emitter } from './emitter';
+import { ParticleEmitter } from './emitter';
 
 /**
  * An SPE.Group instance.
@@ -77,12 +77,12 @@ import { Emitter } from './emitter';
  */
 
 /**
- * The SPE.Group class. Creates a new group, containing a material, geometry, and mesh.
+ * The ParticleSystem class. Creates a new group, containing a material, geometry, and mesh.
  *
  * @constructor
  * @param {GroupOptions} options A map of options to configure the group instance.
  */
-export class Group {
+export class ParticleSystem {
     private _uuid: string;
     private _fixedTimeStep: number;
 
@@ -103,10 +103,10 @@ export class Group {
     private _scale: number;
     private _pixelRatio: number;
 
-    private _emitters: Emitter[];
+    private _emitters: ParticleEmitter[];
     private _emitterIDs: string[];
 
-    private _pool: Emitter[];
+    private _pool: ParticleEmitter[];
     private _poolCreationSettings: EmitterOptions | EmitterOptions[] | null;
     private _createNewWhenPoolEmpty: boolean;
 
@@ -292,7 +292,7 @@ export class Group {
 
         if (this._maxParticleCount === null) {
             console.warn(
-                'SPE.Group: No maxParticleCount specified. Adding emitters after rendering will probably cause errors.',
+                'ThreeParticles: No maxParticleCount specified. Adding emitters after rendering will probably cause errors.',
             );
         }
     }
@@ -413,9 +413,9 @@ export class Group {
      * Adds an SPE.Emitter instance to this group, creating particle values and
      * assigning them to this group's shader attributes.
      *
-     * @param {Emitter} emitter The emitter to add to this group.
+     * @param {ParticleEmitter} emitter The emitter to add to this group.
      */
-    public addEmitter(emitter: Emitter): Group {
+    public addEmitter(emitter: ParticleEmitter): ParticleSystem {
         // If the emitter already exists as a member of this group, then
         // stop here, we don't want to add it again.
         if (this._emitterIDs.indexOf(emitter.uuid) > -1) {
@@ -425,7 +425,7 @@ export class Group {
 
         // And finally, if the emitter is a member of another group,
         // don't add it to this group.
-        else if (emitter.group !== null) {
+        else if (emitter.system !== null) {
             console.error('Emitter already belongs to another group. Will not add to requested group.');
             return this;
         }
@@ -439,7 +439,7 @@ export class Group {
         // Emit a warning if the emitter being added will exceed the buffer sizes specified.
         if (this._maxParticleCount !== null && this._particleCount > this._maxParticleCount) {
             console.warn(
-                'SPE.Group: maxParticleCount exceeded. Requesting',
+                'ThreeParticles: maxParticleCount exceeded. Requesting',
                 this._particleCount,
                 'particles, can support only',
                 this._maxParticleCount,
@@ -457,7 +457,7 @@ export class Group {
 
         // Save a reference to this group on the emitter so it knows
         // where it belongs.
-        emitter.group = this;
+        emitter.system = this;
 
         // Store reference to the attributes on the emitter for
         // easier access during the emitter's tick function.
@@ -523,9 +523,9 @@ export class Group {
      * all particle's belonging to the given emitter will be instantly
      * removed from the scene.
      *
-     * @param {Emitter} emitter The emitter to add to this group.
+     * @param {ParticleEmitter} emitter The emitter to add to this group.
      */
-    public removeEmitter(emitter: Emitter): void {
+    public removeEmitter(emitter: ParticleEmitter): void {
         const emitterIndex = this._emitterIDs.indexOf(emitter.uuid);
 
         // Ensure an actual emitter instance is passed here.
@@ -533,7 +533,7 @@ export class Group {
         // Decided not to throw here, just in case a scene's
         // rendering would be paused. Logging an error instead
         // of stopping execution if exceptions aren't caught.
-        if (emitter instanceof Emitter === false) {
+        if (emitter instanceof ParticleEmitter === false) {
             console.error('`emitter` argument must be instance of SPE.Emitter. Was provided with:', emitter);
             return undefined;
         }
@@ -589,9 +589,9 @@ export class Group {
      * If there are no objects in the pool, a new emitter will be
      * created if specified.
      *
-     * @return {Emitter|null}
+     * @return {ParticleEmitter|null}
      */
-    public getFromPool(): Emitter | undefined {
+    public getFromPool(): ParticleEmitter | undefined {
         if (this._pool.length) {
             return this._pool.pop();
         } else if (this._createNewWhenPoolEmpty) {
@@ -611,10 +611,10 @@ export class Group {
      * Release an emitter into the pool.
      *
      * @param  {ShaderParticleEmitter} emitter
-     * @return {Group} This group instance.
+     * @return {ParticleSystem} This group instance.
      */
-    public releaseIntoPool(emitter: Emitter): Group {
-        if (emitter instanceof Emitter === false) {
+    public releaseIntoPool(emitter: ParticleEmitter): ParticleSystem {
+        if (emitter instanceof ParticleEmitter === false) {
             console.error('Argument is not instanceof SPE.Emitter:', emitter);
             return this;
         }
@@ -630,7 +630,7 @@ export class Group {
      *
      * @return {Array}
      */
-    public getPool(): Emitter[] {
+    public getPool(): ParticleEmitter[] {
         return this._pool;
     }
 
@@ -640,9 +640,13 @@ export class Group {
      * @param {Number} numEmitters      The number of emitters to add to the pool.
      * @param {EmitterOptions|Array} emitterOptions  An object, or array of objects, describing the options to pass to each emitter.
      * @param {Boolean} createNew       Should a new emitter be created if the pool runs out?
-     * @return {Group} This group instance.
+     * @return {ParticleSystem} This group instance.
      */
-    public addPool(numEmitters: number, emitterOptions: EmitterOptions | EmitterOptions[], createNew: boolean): Group {
+    public addPool(
+        numEmitters: number,
+        emitterOptions: EmitterOptions | EmitterOptions[],
+        createNew: boolean,
+    ): ParticleSystem {
         let emitter;
 
         // Save relevant settings and flags.
@@ -652,9 +656,9 @@ export class Group {
         // Create the emitters, add them to this group and the pool.
         for (let i = 0; i < numEmitters; ++i) {
             if (Array.isArray(emitterOptions)) {
-                emitter = new Emitter(emitterOptions[i]);
+                emitter = new ParticleEmitter(emitterOptions[i]);
             } else {
-                emitter = new Emitter(emitterOptions);
+                emitter = new ParticleEmitter(emitterOptions);
             }
             this.addEmitter(emitter);
             this.releaseIntoPool(emitter);
@@ -669,9 +673,9 @@ export class Group {
      *
      * @param  {Number} numEmitters The number of emitters to activate
      * @param  {Object} [position=undefined] A THREE.Vector3 instance describing the position to activate the emitter(s) at.
-     * @return {Group} This group instance.
+     * @return {ParticleSystem} This group instance.
      */
-    public triggerPoolEmitter(numEmitters: number, position: Vector3): Group {
+    public triggerPoolEmitter(numEmitters: number, position: Vector3): ParticleSystem {
         if (typeof numEmitters === 'number' && numEmitters > 1) {
             for (let i = 0; i < numEmitters; ++i) {
                 this._triggerSingleEmitter(position);
@@ -740,19 +744,19 @@ export class Group {
     /**
      * Dipose the geometry and material for the group.
      *
-     * @return {Group} Group instance.
+     * @return {ParticleSystem} Group instance.
      */
-    public dispose(): Group {
+    public dispose(): ParticleSystem {
         this._geometry.dispose();
         this._material.dispose();
         return this;
     }
 
-    private _triggerSingleEmitter(pos: Vector3): Group | undefined {
+    private _triggerSingleEmitter(pos: Vector3): ParticleSystem | undefined {
         const emitter = this.getFromPool();
 
         if (emitter === null) {
-            console.log('SPE.Group pool ran out.');
+            console.log('ThreeParticles: System pool ran out.');
             return;
         }
 
@@ -791,7 +795,7 @@ export class Group {
         }
     }
 
-    private _updateBuffers(emitter: Emitter): void {
+    private _updateBuffers(emitter: ParticleEmitter): void {
         for (let i = this._attributeCount - 1; i >= 0; --i) {
             const key = this._attributeKeys[i];
             const emitterAttr = emitter.bufferUpdateRanges[key]!;

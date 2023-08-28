@@ -2,7 +2,7 @@ import { Color, Vector3 } from 'three';
 import { valueOverLifetimeLength } from '../../constants';
 import { EmitterProperty } from '../../types';
 import { ensureTypedArg, ensureValueAndSpreadOverLifetimeCompliance } from '../../utils';
-import { Emitter } from '../emitter';
+import { ParticleEmitter } from '../emitter';
 
 export class EmitterColor {
     private _propName: EmitterProperty = EmitterProperty.color;
@@ -14,7 +14,7 @@ export class EmitterColor {
         value: Color | Color[] | undefined,
         spread: Vector3 | Vector3[] | undefined,
         randomize: boolean | undefined,
-        private _emitter: Emitter,
+        private _emitter: ParticleEmitter,
     ) {
         const { value: valuesArray, spread: spreadsArray } = ensureValueAndSpreadOverLifetimeCompliance(
             ensureTypedArg(value, 'object', new Color()),
@@ -37,7 +37,7 @@ export class EmitterColor {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         const { value: valuesArray } = ensureValueAndSpreadOverLifetimeCompliance(
             ensureTypedArg(value, 'object', new Color()),
@@ -59,7 +59,7 @@ export class EmitterColor {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         const { spread: spreadsArray } = ensureValueAndSpreadOverLifetimeCompliance(
             this._value,
@@ -80,7 +80,7 @@ export class EmitterColor {
 
         this._emitter.resetFlags[mapName] = value;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._randomize = value;
     }

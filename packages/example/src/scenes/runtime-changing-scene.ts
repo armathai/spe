@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Emitter, Group } from '@armathai/spe';
-import { Distribution } from '@armathai/spe/dist/types';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
+import { Distribution } from '@armathai/three-particles/dist/types';
 import GUI from 'lil-gui';
 import { Texture, Vector2, Vector3 } from 'three';
 import spriteFlame from '../../assets/sprite-flame.jpg';
@@ -8,7 +8,7 @@ import { SceneBase } from '../scene-base';
 
 export class RuntimeChangingScene extends SceneBase {
     private _spriteFlameTexture: Texture;
-    private _emitter: Emitter;
+    private _emitter: ParticleEmitter;
 
     protected async init(): Promise<void> {
         await super.init();
@@ -25,7 +25,7 @@ export class RuntimeChangingScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._spriteFlameTexture,
                 frames: new Vector2(8, 4),
@@ -35,7 +35,7 @@ export class RuntimeChangingScene extends SceneBase {
             depthTest: true,
             scale: window.innerHeight / 2.0,
         });
-        const emitter = new Emitter({
+        const emitter = new ParticleEmitter({
             particleCount: 200,
             maxAge: {
                 value: 2,
@@ -92,8 +92,8 @@ export class RuntimeChangingScene extends SceneBase {
                 spread: 0,
             },
         });
-        this.particleGroup.addEmitter((this._emitter = emitter));
-        this.add(this.particleGroup.mesh);
+        this.particleSystem.addEmitter((this._emitter = emitter));
+        this.add(this.particleSystem.mesh);
     }
 
     protected initGUI(): void {
@@ -103,28 +103,28 @@ export class RuntimeChangingScene extends SceneBase {
 
         const groupFolder = gui.addFolder('Group Settings');
 
-        groupFolder.add(this.particleGroup, 'textureLoop', 1, 10, 1).onChange(() => {
+        groupFolder.add(this.particleSystem, 'textureLoop', 1, 10, 1).onChange(() => {
             this._updateMaterial();
         });
-        groupFolder.add(this.particleGroup, 'blending', 0, 5, 1).onChange(() => {
+        groupFolder.add(this.particleSystem, 'blending', 0, 5, 1).onChange(() => {
             this._updateMaterial();
         });
-        groupFolder.add(this.particleGroup, 'colorize').onChange(() => {
+        groupFolder.add(this.particleSystem, 'colorize').onChange(() => {
             this._updateMaterial();
         });
-        groupFolder.add(this.particleGroup, 'hasPerspective').onChange(() => {
+        groupFolder.add(this.particleSystem, 'hasPerspective').onChange(() => {
             this._updateMaterial();
         });
-        groupFolder.add(this.particleGroup, 'transparent').onChange(() => {
+        groupFolder.add(this.particleSystem, 'transparent').onChange(() => {
             this._updateMaterial();
         });
-        groupFolder.add(this.particleGroup, 'alphaTest', 0, 1, 0.1).onChange(() => {
+        groupFolder.add(this.particleSystem, 'alphaTest', 0, 1, 0.1).onChange(() => {
             this._updateMaterial();
         });
-        groupFolder.add(this.particleGroup, 'depthWrite').onChange(() => {
+        groupFolder.add(this.particleSystem, 'depthWrite').onChange(() => {
             this._updateMaterial();
         });
-        groupFolder.add(this.particleGroup, 'depthTest').onChange(() => {
+        groupFolder.add(this.particleSystem, 'depthTest').onChange(() => {
             this._updateMaterial();
         });
 
@@ -262,6 +262,6 @@ export class RuntimeChangingScene extends SceneBase {
     }
 
     private _updateMaterial(): void {
-        this.particleGroup.material.needsUpdate = true;
+        this.particleSystem.material.needsUpdate = true;
     }
 }

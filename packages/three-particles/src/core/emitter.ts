@@ -26,7 +26,7 @@ import { EmitterRotation } from './emitter_properties/emitter-rotation';
 import { EmitterSize } from './emitter_properties/emitter-size';
 import { EmitterVelocity } from './emitter_properties/emitter-velocity';
 import { EmitterWiggle } from './emitter_properties/emitter-wiggle';
-import { Group } from './group';
+import { ParticleSystem } from './particle-system';
 
 /* eslint-disable */
 /**
@@ -52,7 +52,7 @@ import { Group } from './group';
  * @property {Number|null} [duration=null] The duration in seconds that this emitter should live for. If not specified, the emitter
  *                                         will emit particles indefinitely.
  *                                         NOTE: When an emitter is older than a specified duration, the emitter is NOT removed from
- *                                         it's group, but rather is just marked as dead, allowing it to be reanimated at a later time
+ *                                         it's system, but rather is just marked as dead, allowing it to be reanimated at a later time
  *                                         using `SPE.Emitter.prototype.enable()`.
  *
  * @property {Boolean} [isStatic=false] Whether this emitter should be not be simulated (true).
@@ -180,7 +180,7 @@ import { Group } from './group';
  *
  * @param {EmitterOptions} options A map of options to configure the emitter.
  */
-export class Emitter {
+export class ParticleEmitter {
     private _type: Distribution;
     private _uuid: string;
 
@@ -210,7 +210,7 @@ export class Emitter {
     private _attributeEnd: number;
     private _age: number;
     private _activeParticleCount: number;
-    private _group: Group | null;
+    private _system: ParticleSystem | null;
     private _attributes: GroupAttributesMap | null;
     private _paramsArray: TypedArray | null;
 
@@ -342,11 +342,11 @@ export class Emitter {
         // Holds the number of currently-alive particles
         this._activeParticleCount = 0.0;
 
-        // Holds a reference to this emitter's group once
+        // Holds a reference to this emitter's system once
         // it's added to one.
-        this._group = null;
+        this._system = null;
 
-        // Holds a reference to this emitter's group's attributes object
+        // Holds a reference to this emitter's system's attributes object
         // for easier access.
         this._attributes = null;
 
@@ -436,12 +436,12 @@ export class Emitter {
         return this._updateCounts;
     }
 
-    public get group(): Group | null {
-        return this._group;
+    public get system(): ParticleSystem | null {
+        return this._system;
     }
 
-    public set group(value: Group | null) {
-        this._group = value;
+    public set system(value: ParticleSystem | null) {
+        this._system = value;
     }
 
     public get type(): Distribution {
@@ -829,9 +829,9 @@ export class Emitter {
      * true.
      *
      * @param  {Boolean} [force=undefined] If true, all particles will be marked as dead instantly.
-     * @return {Emitter}       This emitter instance.
+     * @return {ParticleEmitter}       This emitter instance.
      */
-    public reset(force: boolean = false): Emitter {
+    public reset(force: boolean = false): ParticleEmitter {
         this._age = 0.0;
         this._alive = false;
 
@@ -860,9 +860,9 @@ export class Emitter {
      * Enables the emitter. If not already enabled, the emitter
      * will start emitting particles.
      *
-     * @return {Emitter} This emitter instance.
+     * @return {ParticleEmitter} This emitter instance.
      */
-    public enable(): Emitter {
+    public enable(): ParticleEmitter {
         this._alive = true;
         return this;
     }
@@ -873,29 +873,29 @@ export class Emitter {
      * 'switched off' and just stop emitting. Any particle's alive will
      * be allowed to finish their lifecycle.
      *
-     * @return {Emitter} This emitter instance.
+     * @return {ParticleEmitter} This emitter instance.
      */
-    public disable(): Emitter {
+    public disable(): ParticleEmitter {
         this._alive = false;
         return this;
     }
 
     /**
-     * Remove this emitter from it's parent group (if it has been added to one).
-     * Delgates to SPE.group.prototype.removeEmitter().
+     * Remove this emitter from it's parent system (if it has been added to one).
+     * Delgates to SPE.system.prototype.removeEmitter().
      *
      * When called, all particle's belonging to this emitter will be instantly
      * removed from the scene.
      *
-     * @return {Emitter} This emitter instance.
+     * @return {ParticleEmitter} This emitter instance.
      *
-     * @see SPE.Group.prototype.removeEmitter
+     * @see SPE.system.prototype.removeEmitter
      */
-    public remove(): Emitter {
-        if (this.group !== null) {
-            this.group.removeEmitter(this);
+    public remove(): ParticleEmitter {
+        if (this.system !== null) {
+            this.system.removeEmitter(this);
         } else {
-            console.error('Emitter does not belong to a group, cannot remove.');
+            console.error('Emitter does not belong to a system, cannot remove.');
         }
 
         return this;
@@ -903,12 +903,12 @@ export class Emitter {
 
     public onRemove(): void {
         // Reset any properties of the emitter that were set by
-        // a group when it was added.
+        // a system when it was added.
         this._particlesPerSecond = 0;
         this._attributeOffset = 0;
         this._activationIndex = 0;
         this._activeParticleCount = 0;
-        this._group = null;
+        this._system = null;
         this._attributes = null;
         this._paramsArray = null;
         this._age = 0.0;

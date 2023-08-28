@@ -1,5 +1,5 @@
-import { Emitter, Group } from '@armathai/spe';
-import { Distribution } from '@armathai/spe/dist/types';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
+import { Distribution } from '@armathai/three-particles/dist/types';
 import { AdditiveBlending, BoxGeometry, Color, Mesh, MeshBasicMaterial, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
@@ -74,7 +74,7 @@ export class PoolScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
@@ -82,8 +82,8 @@ export class PoolScene extends SceneBase {
             pixelRatio: this.renderer.getPixelRatio(),
         });
 
-        this.particleGroup.addPool(10, this._emitterConfig, false);
-        const emitter = new Emitter({
+        this.particleSystem.addPool(10, this._emitterConfig, false);
+        const emitter = new ParticleEmitter({
             maxAge: {
                 value: 2,
             },
@@ -107,12 +107,12 @@ export class PoolScene extends SceneBase {
             },
             particleCount: 2000,
         });
-        this.particleGroup.addEmitter(emitter);
-        this.add(this.particleGroup.mesh);
+        this.particleSystem.addEmitter(emitter);
+        this.add(this.particleSystem.mesh);
     }
 
     private _createExplosion(): void {
         const num = 150;
-        this.particleGroup.triggerPoolEmitter(1, this._pos.set(rand(num), rand(num), rand(num)));
+        this.particleSystem.triggerPoolEmitter(1, this._pos.set(rand(num), rand(num), rand(num)));
     }
 }

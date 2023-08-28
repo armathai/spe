@@ -1,7 +1,7 @@
 import { Vector3 } from 'three';
 import { Distribution, EmitterProperty } from '../../types';
 import { ensureInstanceOf, ensureTypedArg } from '../../utils';
-import { Emitter } from '../emitter';
+import { ParticleEmitter } from '../emitter';
 
 export class EmitterPosition {
     private _propName: EmitterProperty = EmitterProperty.position;
@@ -23,7 +23,7 @@ export class EmitterPosition {
         radius: number | undefined,
         radiusScale: Vector3 | undefined,
         distributionClamp: number | undefined,
-        private _emitter: Emitter,
+        private _emitter: ParticleEmitter,
     ) {
         this._value = ensureInstanceOf(value, Vector3, new Vector3());
         this._spread = ensureInstanceOf(spread, Vector3, new Vector3());
@@ -45,7 +45,7 @@ export class EmitterPosition {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._value = value;
     }
@@ -60,7 +60,7 @@ export class EmitterPosition {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._spread = value;
     }
@@ -75,7 +75,7 @@ export class EmitterPosition {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._spreadClamp = value;
     }
@@ -89,7 +89,7 @@ export class EmitterPosition {
 
         this._emitter.resetFlags[mapName] = value;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._randomize = value;
     }
@@ -104,7 +104,7 @@ export class EmitterPosition {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._radius = value;
     }
@@ -119,7 +119,7 @@ export class EmitterPosition {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._radiusScale = value;
     }
@@ -134,7 +134,7 @@ export class EmitterPosition {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._distribution = value;
     }
@@ -149,7 +149,7 @@ export class EmitterPosition {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._distributionClamp = value;
     }

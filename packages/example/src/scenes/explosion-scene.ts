@@ -1,5 +1,5 @@
-import { Emitter, Group } from '@armathai/spe';
-import { Distribution } from '@armathai/spe/dist/types';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
+import { Distribution } from '@armathai/three-particles/dist/types';
 import {
     AdditiveBlending,
     Color,
@@ -20,7 +20,7 @@ import { SceneBase } from '../scene-base';
 export class ExplosionScene extends SceneBase {
     private _smokeTexture: Texture;
     private _spriteExplosionTexture: Texture;
-    private _shockWaveGroup: Group;
+    private _shockWaveGroup: ParticleSystem;
 
     public update(dt: number): void {
         super.update(dt);
@@ -64,7 +64,7 @@ export class ExplosionScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._spriteExplosionTexture,
                 frames: new Vector2(5, 5),
@@ -77,7 +77,7 @@ export class ExplosionScene extends SceneBase {
             pixelRatio: this.renderer.getPixelRatio(),
         });
 
-        this._shockWaveGroup = new Group({
+        this._shockWaveGroup = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
@@ -87,7 +87,7 @@ export class ExplosionScene extends SceneBase {
             pixelRatio: this.renderer.getPixelRatio(),
         });
 
-        const shockWave = new Emitter({
+        const shockWave = new ParticleEmitter({
             particleCount: 200,
             type: Distribution.disc,
             position: {
@@ -116,7 +116,7 @@ export class ExplosionScene extends SceneBase {
             opacity: { value: [0.5, 0.2, 0] },
         });
 
-        const debris = new Emitter({
+        const debris = new ParticleEmitter({
             particleCount: 100,
             type: Distribution.sphere,
             position: {
@@ -145,7 +145,7 @@ export class ExplosionScene extends SceneBase {
             opacity: { value: [0.4, 0] },
         });
 
-        const fireball = new Emitter({
+        const fireball = new ParticleEmitter({
             particleCount: 20,
             type: Distribution.sphere,
             position: {
@@ -164,7 +164,7 @@ export class ExplosionScene extends SceneBase {
             opacity: { value: [0.5, 0.35, 0.1, 0] },
         });
 
-        const mist = new Emitter({
+        const mist = new ParticleEmitter({
             particleCount: 50,
             position: {
                 spread: new Vector3(10, 10, 10),
@@ -184,7 +184,7 @@ export class ExplosionScene extends SceneBase {
             opacity: { value: [0, 0, 0.2, 0] },
         });
 
-        const flash = new Emitter({
+        const flash = new ParticleEmitter({
             particleCount: 50,
             position: { spread: new Vector3(5, 5, 5) },
             velocity: {
@@ -197,10 +197,10 @@ export class ExplosionScene extends SceneBase {
             opacity: { value: [0.5, 0.25, 0, 0] },
         });
 
-        this.particleGroup.addEmitter(fireball).addEmitter(flash);
+        this.particleSystem.addEmitter(fireball).addEmitter(flash);
         this._shockWaveGroup.addEmitter(debris).addEmitter(mist).addEmitter(shockWave);
 
-        this.add(this.particleGroup.mesh);
+        this.add(this.particleSystem.mesh);
         this.add(this._shockWaveGroup.mesh);
     }
 }

@@ -1,7 +1,7 @@
 import { Vector3 } from 'three';
 import { EmitterProperty } from '../../types';
 import { ensureInstanceOf, ensureTypedArg } from '../../utils';
-import { Emitter } from '../emitter';
+import { ParticleEmitter } from '../emitter';
 
 export class EmitterRotation {
     private _propName: EmitterProperty = EmitterProperty.rotation;
@@ -21,7 +21,7 @@ export class EmitterRotation {
         isStatic: boolean | undefined,
         center: Vector3 | undefined,
         randomize: boolean | undefined,
-        private _emitter: Emitter,
+        private _emitter: ParticleEmitter,
     ) {
         this._axis = ensureInstanceOf(axis, Vector3, new Vector3(0, 1, 0));
         this._axisSpread = ensureInstanceOf(axisSpread, Vector3, new Vector3());
@@ -42,7 +42,7 @@ export class EmitterRotation {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._axis = value;
     }
@@ -57,7 +57,7 @@ export class EmitterRotation {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._axisSpread = value;
     }
@@ -72,7 +72,7 @@ export class EmitterRotation {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._angle = value;
     }
@@ -87,7 +87,7 @@ export class EmitterRotation {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._angleSpread = value;
     }
@@ -102,7 +102,7 @@ export class EmitterRotation {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._static = value;
     }
@@ -117,7 +117,7 @@ export class EmitterRotation {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._center = value;
     }
@@ -131,7 +131,7 @@ export class EmitterRotation {
 
         this._emitter.resetFlags[mapName] = value;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._randomize = value;
     }

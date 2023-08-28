@@ -1,5 +1,5 @@
-import { Emitter, Group } from '@armathai/spe';
-import { Distribution } from '@armathai/spe/dist/types';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
+import { Distribution } from '@armathai/three-particles/dist/types';
 import { Color, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
@@ -23,17 +23,17 @@ export class AddRemoveEmitterTestScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
             pixelRatio: this.renderer.getPixelRatio(),
         });
 
-        const emitters: Emitter[] = [];
+        const emitters: ParticleEmitter[] = [];
 
         for (let i = 1; i < 2; ++i) {
-            const emitter = new Emitter({
+            const emitter = new ParticleEmitter({
                 type: 1,
                 maxAge: {
                     value: 1,
@@ -58,12 +58,12 @@ export class AddRemoveEmitterTestScene extends SceneBase {
             });
 
             emitters.push(emitter);
-            this.particleGroup.addEmitter(emitter);
+            this.particleSystem.addEmitter(emitter);
         }
 
         // setTimeout(() => {
         //     // this.particleGroup.removeEmitter(emitters[0]);
-        //     const emitter = new Emitter({
+        //     const emitter = new ParticleEmitter({
         //         type: 1,
         //         maxAge: {
         //             value: 1,
@@ -92,6 +92,6 @@ export class AddRemoveEmitterTestScene extends SceneBase {
         //     // this.particleGroup.addEmitter(emitters[0]);
         // }, 5000);
 
-        this.add(this.particleGroup.mesh);
+        this.add(this.particleSystem.mesh);
     }
 }

@@ -1,4 +1,4 @@
-import { Emitter, Group } from '@armathai/spe';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
 import { Color, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
@@ -6,7 +6,7 @@ import { SceneBase } from '../scene-base';
 export class SingleClockScene extends SceneBase {
     private _smokeTexture: Texture;
 
-    private _secondHand: Emitter;
+    private _secondHand: ParticleEmitter;
     private _date: Date;
 
     public update(_dt: number): void {
@@ -47,14 +47,14 @@ export class SingleClockScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
             pixelRatio: this.renderer.getPixelRatio(),
         });
 
-        this._secondHand = new Emitter({
+        this._secondHand = new ParticleEmitter({
             particleCount: 500,
             maxAge: {
                 value: 2,
@@ -80,8 +80,8 @@ export class SingleClockScene extends SceneBase {
             direction: -1,
         });
 
-        this.particleGroup.addEmitter(this._secondHand);
+        this.particleSystem.addEmitter(this._secondHand);
 
-        this.add(this.particleGroup.mesh);
+        this.add(this.particleSystem.mesh);
     }
 }

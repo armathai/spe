@@ -158,14 +158,14 @@ export type GroupOptions = {
 };
 
 export type GroupAttributesMap = {
-    position: ShaderAttribute; // new SPE.ShaderAttribute( 'v3', true),
-    acceleration: ShaderAttribute; // new SPE.ShaderAttribute( 'v4', true), // w component is drag
-    velocity: ShaderAttribute; // new SPE.ShaderAttribute( 'v3', true),
-    rotation: ShaderAttribute; // new SPE.ShaderAttribute( 'v4', true),
-    rotationCenter: ShaderAttribute; // new SPE.ShaderAttribute( 'v3', true),
-    params: ShaderAttribute; // new SPE.ShaderAttribute( 'v4', true), // Holds (alive, age, delay, wiggle)
-    size: ShaderAttribute; // new SPE.ShaderAttribute( 'v4', true),
-    angle: ShaderAttribute; // new SPE.ShaderAttribute( 'v4', true),
-    color: ShaderAttribute; // new SPE.ShaderAttribute( 'v4', true),
-    opacity: ShaderAttribute; // new SPE.ShaderAttribute( 'v4', true)
+    position: ShaderAttribute; // new ShaderAttribute( 'v3', true),
+    acceleration: ShaderAttribute; // new ShaderAttribute( 'v4', true), // w component is drag
+    velocity: ShaderAttribute; // new ShaderAttribute( 'v3', true),
+    rotation: ShaderAttribute; // new ShaderAttribute( 'v4', true),
+    rotationCenter: ShaderAttribute; // new ShaderAttribute( 'v3', true),
+    params: ShaderAttribute; // new ShaderAttribute( 'v4', true), // Holds (alive, age, delay, wiggle)
+    size: ShaderAttribute; // new ShaderAttribute( 'v4', true),
+    angle: ShaderAttribute; // new ShaderAttribute( 'v4', true),
+    color: ShaderAttribute; // new ShaderAttribute( 'v4', true),
+    opacity: ShaderAttribute; // new ShaderAttribute( 'v4', true)
 };

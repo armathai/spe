@@ -11,7 +11,7 @@
         "start": "rimraf dist && parcel --port 8080"
     },
     "dependencies": {
-        "@armathai/spe": "*",
+        "@armathai/three-particles": "*",
         "lil-gui": "^0.18.2",
         "stats.js": "^0.17.0",
         "three": "^0.155.0"

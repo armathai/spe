@@ -1,10 +1,10 @@
 import { Vector3 } from 'three';
 import { Distribution, EmitterProperty } from '../../types';
 import { ensureInstanceOf, ensureTypedArg } from '../../utils';
-import { Emitter } from '../emitter';
+import { ParticleEmitter } from '../emitter';
 
-export class EmitterVelocity {
-    private _propName: EmitterProperty = EmitterProperty.velocity;
+export class EmitterAcceleration {
+    private _propName: EmitterProperty = EmitterProperty.acceleration;
     private _value: Vector3;
     private _spread: Vector3;
     private _distribution: Distribution;
@@ -15,7 +15,7 @@ export class EmitterVelocity {
         spread: Vector3 | undefined,
         distribution: Distribution | undefined,
         randomize: boolean | undefined,
-        private _emitter: Emitter,
+        private _emitter: ParticleEmitter,
     ) {
         this._value = ensureInstanceOf(value, Vector3, new Vector3());
         this._spread = ensureInstanceOf(spread, Vector3, new Vector3());
@@ -33,7 +33,7 @@ export class EmitterVelocity {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._value = value;
     }
@@ -48,7 +48,7 @@ export class EmitterVelocity {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._spread = value;
     }
@@ -63,7 +63,7 @@ export class EmitterVelocity {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._distribution = value;
     }
@@ -77,7 +77,7 @@ export class EmitterVelocity {
 
         this._emitter.resetFlags[mapName] = value;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._randomize = value;
     }

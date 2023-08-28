@@ -1,10 +1,10 @@
 import { valueOverLifetimeLength } from '../../constants';
 import { EmitterProperty } from '../../types';
 import { ensureArrayTypedArg, ensureTypedArg, ensureValueAndSpreadOverLifetimeCompliance } from '../../utils';
-import { Emitter } from '../emitter';
+import { ParticleEmitter } from '../emitter';
 
-export class EmitterOpacity {
-    private _propName: EmitterProperty = EmitterProperty.opacity;
+export class EmitterSize {
+    private _propName: EmitterProperty = EmitterProperty.size;
     private _value: number[];
     private _spread: number[];
     private _randomize: boolean;
@@ -13,7 +13,7 @@ export class EmitterOpacity {
         value: number | number[] | undefined,
         spread: number | number[] | undefined,
         randomize: boolean | undefined,
-        private _emitter: Emitter,
+        private _emitter: ParticleEmitter,
     ) {
         const { value: valuesArray, spread: spreadsArray } = ensureValueAndSpreadOverLifetimeCompliance(
             ensureArrayTypedArg(value, 'number', 1),
@@ -36,7 +36,7 @@ export class EmitterOpacity {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         const { value: valuesArray } = ensureValueAndSpreadOverLifetimeCompliance(
             ensureArrayTypedArg(value, 'number', 1),
@@ -58,7 +58,7 @@ export class EmitterOpacity {
         this._emitter.updateFlags[mapName] = true;
         this._emitter.updateCounts[mapName] = 0.0;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         const { spread: spreadsArray } = ensureValueAndSpreadOverLifetimeCompliance(
             this._value,
@@ -79,7 +79,7 @@ export class EmitterOpacity {
 
         this._emitter.resetFlags[mapName] = value;
 
-        this._emitter.group!.updateDefines();
+        this._emitter.system!.updateDefines();
 
         this._randomize = value;
     }

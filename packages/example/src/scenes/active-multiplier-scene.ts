@@ -1,12 +1,12 @@
-import { Emitter, Group } from '@armathai/spe';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
 import GUI from 'lil-gui';
 import { Color, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
-
+``;
 export class ActiveMultiplierScene extends SceneBase {
     private _smokeTexture: Texture;
-    private _emitter: Emitter;
+    private _emitter: ParticleEmitter;
 
     protected async init(): Promise<void> {
         await super.init();
@@ -21,13 +21,13 @@ export class ActiveMultiplierScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
             pixelRatio: this.renderer.getPixelRatio(),
         });
-        const emitter = new Emitter({
+        const emitter = new ParticleEmitter({
             maxAge: {
                 value: 2,
             },
@@ -57,8 +57,8 @@ export class ActiveMultiplierScene extends SceneBase {
             particleCount: 2000,
             activeMultiplier: 1,
         });
-        this.particleGroup.addEmitter((this._emitter = emitter));
-        this.add(this.particleGroup.mesh);
+        this.particleSystem.addEmitter((this._emitter = emitter));
+        this.add(this.particleSystem.mesh);
     }
 
     protected initGUI(): void {

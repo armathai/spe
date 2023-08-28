@@ -1,8 +1,8 @@
-import { Group } from '@armathai/spe';
+import { ParticleSystem } from '@armathai/three-particles';
 import { Camera, Scene, TextureLoader, WebGLRenderer } from 'three';
 
 export class SceneBase extends Scene {
-    protected particleGroup: Group;
+    protected particleSystem: ParticleSystem;
 
     public constructor(
         protected loader: TextureLoader,
@@ -14,7 +14,7 @@ export class SceneBase extends Scene {
     }
 
     public update(dt?: number): void {
-        this.particleGroup?.tick(dt);
+        this.particleSystem?.tick(dt);
     }
 
     protected async init(): Promise<void> {

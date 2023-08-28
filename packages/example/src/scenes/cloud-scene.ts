@@ -1,4 +1,4 @@
-import { Emitter, Group } from '@armathai/spe';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
 import { Color, Fog, NormalBlending, Texture, Vector3 } from 'three';
 import cloudParticle from '../../assets/cloud-particle.png';
 import { SceneBase } from '../scene-base';
@@ -18,7 +18,7 @@ export class CloudScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._cloudTexture,
             },
@@ -26,7 +26,7 @@ export class CloudScene extends SceneBase {
             fog: true,
             pixelRatio: this.renderer.getPixelRatio(),
         });
-        const emitter = new Emitter({
+        const emitter = new ParticleEmitter({
             particleCount: 750,
             maxAge: {
                 value: 3,
@@ -56,7 +56,7 @@ export class CloudScene extends SceneBase {
                 value: [0, Math.PI * 0.125],
             },
         });
-        this.particleGroup.addEmitter(emitter);
-        this.add(this.particleGroup.mesh);
+        this.particleSystem.addEmitter(emitter);
+        this.add(this.particleSystem.mesh);
     }
 }

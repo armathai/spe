@@ -1,4 +1,3 @@
-// import { Emitter, Group } from '@armathai/spe';
 import { Clock, PerspectiveCamera, TextureLoader, Vector3, WebGLRenderer } from 'three';
 
 import Stats from 'stats.js';

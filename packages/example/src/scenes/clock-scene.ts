@@ -1,4 +1,4 @@
-import { Emitter, Group } from '@armathai/spe';
+import { ParticleEmitter, ParticleSystem } from '@armathai/three-particles';
 import { Color, Texture, Vector3 } from 'three';
 import smokeParticle from '../../assets/smoke-particle.png';
 import { SceneBase } from '../scene-base';
@@ -6,9 +6,9 @@ import { SceneBase } from '../scene-base';
 export class ClockScene extends SceneBase {
     private _smokeTexture: Texture;
 
-    private _secondHand: Emitter;
-    private _minuteHand: Emitter;
-    private _hourHand: Emitter;
+    private _secondHand: ParticleEmitter;
+    private _minuteHand: ParticleEmitter;
+    private _hourHand: ParticleEmitter;
     private _date: Date;
 
     public update(_dt: number): void {
@@ -62,14 +62,14 @@ export class ClockScene extends SceneBase {
     }
 
     protected initParticles(): void {
-        this.particleGroup = new Group({
+        this.particleSystem = new ParticleSystem({
             texture: {
                 value: this._smokeTexture,
             },
             pixelRatio: this.renderer.getPixelRatio(),
         });
 
-        this._secondHand = new Emitter({
+        this._secondHand = new ParticleEmitter({
             particleCount: 500,
             maxAge: {
                 value: 2,
@@ -94,7 +94,7 @@ export class ClockScene extends SceneBase {
             },
             direction: -1,
         });
-        this._minuteHand = new Emitter({
+        this._minuteHand = new ParticleEmitter({
             particleCount: 500,
             maxAge: {
                 value: 2,
@@ -119,7 +119,7 @@ export class ClockScene extends SceneBase {
             },
             direction: -1,
         });
-        this._hourHand = new Emitter({
+        this._hourHand = new ParticleEmitter({
             particleCount: 500,
             maxAge: {
                 value: 2,
@@ -145,9 +145,9 @@ export class ClockScene extends SceneBase {
             direction: -1,
         });
 
-        this.particleGroup.addEmitter(this._secondHand);
-        this.particleGroup.addEmitter(this._minuteHand);
-        this.particleGroup.addEmitter(this._hourHand);
-        this.add(this.particleGroup.mesh);
+        this.particleSystem.addEmitter(this._secondHand);
+        this.particleSystem.addEmitter(this._minuteHand);
+        this.particleSystem.addEmitter(this._hourHand);
+        this.add(this.particleSystem.mesh);
     }
 }
