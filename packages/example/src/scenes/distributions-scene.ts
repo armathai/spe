@@ -186,10 +186,6 @@ export class DistributionsScene extends SceneBase {
             this.particleGroup.addEmitter(emitter);
         }
 
-        // setTimeout(() => {
-        //     this.particleGroup.removeEmitter(emitters[5]);
-        // }, 1000);
-
         this.add(this.particleGroup.mesh);
     }
 }
